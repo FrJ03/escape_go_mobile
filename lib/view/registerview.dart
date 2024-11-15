@@ -121,7 +121,7 @@ class RegisterScreen extends StatelessWidget {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text('OK',style: TextStyle(fontWeight: FontWeight.bold),),
+                            child: Text('OK',style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
                         ],
                       ),
