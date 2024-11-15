@@ -86,6 +86,26 @@ Widget build(BuildContext context) {
 								);
 							}
 						),
+						CustomButton(
+							value: 'Cerrar sesión',
+							color: Color(0xFFFFA1A1),
+							onPressed: (){
+								showDialog(
+									context: context,
+									builder: (context) => AlertDialog(
+										title: Text('¿Quieres cerrar sesión?',textAlign: TextAlign.center,style: TextStyle(color: Color(0xFFFFA1A1),fontWeight:FontWeight.bold ),
+									),
+									content: Text('¿Cerrar sesión en el dispositivo?'),
+									actions: [
+                          							TextButton(
+                            							onPressed: () => Navigator.pop(context),
+                            							child: Text('Cerrar sesión',style: TextStyle(fontWeight: FontWeight.bold)),
+										                      // cerrar sesion
+                          							),
+                        						],
+								);
+							}
+						),
 					),
 				],
 			),
