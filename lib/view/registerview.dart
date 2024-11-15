@@ -2,19 +2,7 @@ import 'package:escape_go_mobile/view/loginview.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widgets.dart';
 
-class RegisterPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Registrarse"),
-      ),
-      body: Center(
-        child: Text("Bienvenido a la segunda página"),
-      ),
-    );
-  }
-}
+
 class RegisterScreen extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
