@@ -19,6 +19,7 @@ class ProfileScreen extends StatelessWidget {
 				child: Column(
 					crossAxisAlignment: CrossAxisAlignment.start,
 					children: [
+						Center(child:Image.asset('lib/view/assets/perfil.png',height: 150)),
 						SizedBox(height: 30),
 						Center(
 							child: Column(
@@ -71,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
 								],
 							),
 						),
-						SizedBox(height: 100),
+						SizedBox(height: 200),
 						Center(
 							child: Column(
 								children: [
@@ -126,7 +127,7 @@ class ProfileScreen extends StatelessWidget {
 									),
 									SizedBox(height: 16),
 									CustomButton(
-										value: 'Cerrar sesión',
+										value:'Cerrar sesión',
 										color: Color(0xFFFFA1A1),
 										onPressed: () {
 											showDialog(
