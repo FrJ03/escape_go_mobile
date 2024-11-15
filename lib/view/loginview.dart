@@ -34,7 +34,7 @@ class LoginScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 30),
-            Center(child:Image.asset('lib/view/assets/logo_login_register.png',height: 150)),
+            Center(child:Image.asset('lib/view/assets/logo.png',height: 150)),
             Center(
               child:
             Text('Iniciar sesión',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
@@ -97,17 +97,17 @@ class LoginScreen extends StatelessWidget {
                   String password = passwordController.text;
 
                   if (name.isNotEmpty && password.isNotEmpty) {
-                    Navigator.pop(context, true);
+                    Navigator.pop(context,MaterialPageRoute(builder: (context) => LoginScreen() ));
                   } else {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Error'),
+                        title: Text('Error',textAlign: TextAlign.center,style: TextStyle(color: Color(0xFFFFA1A1),fontWeight:FontWeight.bold ),),
                         content: Text('Por favor, completa todos los campos.'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text('OK'),
+                            child: Text('OK',style: TextStyle(fontWeight: FontWeight.bold),),
                           ),
                         ],
                       ),
@@ -127,7 +127,7 @@ class LoginScreen extends StatelessWidget {
                         onTap: () {
                         Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                        MaterialPageRoute(builder: (context) => RegisterScreen()),
                         );
                         },
                     )
