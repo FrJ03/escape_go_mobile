@@ -1,7 +1,8 @@
+import 'package:escape_go_mobile/view/profileview.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widgets.dart';
 import 'registerview.dart';
-
+import '../controller/loginController.dart';
 void main() {
   runApp(MaterialApp(
     home: LoginScreen(),
@@ -12,8 +13,7 @@ void main() {
 }
 
 class LoginScreen extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final LoginController controller=LoginController();
 
 
   @override
@@ -50,7 +50,7 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: 300.0, // Cambia este valor para ajustar el ancho
                     child: TextField(
-                      controller: nameController,
+                      controller: controller.nameController,
                       decoration: InputDecoration(
                         hintText: 'Introduzca el nombre de usuario',
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
@@ -72,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: 300.0, // Cambia este valor para ajustar el ancho
                     child: TextField(
-                      controller: passwordController,
+                      controller: controller.passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Introduzca la contraseña',
@@ -86,33 +86,14 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 220),
+            SizedBox(height: 200),
             Center(
               child:
               CustomButton(
                 value: 'Iniciar sesión',
                 color: Color(0xFFA2DAF1),
                 onPressed: () {
-                  String name = nameController.text;
-                  String password = passwordController.text;
-
-                  if (name.isNotEmpty && password.isNotEmpty) {
-                    Navigator.pop(context,MaterialPageRoute(builder: (context) => LoginScreen() ));
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Error',textAlign: TextAlign.center,style: TextStyle(color: Color(0xFFFFA1A1),fontWeight:FontWeight.bold ),),
-                        content: Text('Por favor, completa todos los campos.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text('OK',style: TextStyle(fontWeight: FontWeight.bold),),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                  controller.login(context);
                 },
               ),
             ),
@@ -130,7 +111,16 @@ class LoginScreen extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => RegisterScreen()),
                         );
                         },
-                    )
+                    ),
+                    InkWell(child:
+                    Text('mi perfil',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,decoration: TextDecoration.underline)),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                      );
+                    },
+                  )
 
                   ],
                 )
