@@ -9,18 +9,18 @@ class LoginController {
     String password = passwordController.text;
 
     if (name.isEmpty || password.isEmpty) {
-      _showErrorDialog(context, 'Por favor, completa todos los campos.');
+      _showDialog(context,'Error','Por favor, completa todos los campos.');
       return;
     }
 
     //Esto es temporal, para probar que funciona correctamente
     bool success = await _authenticate(name, password);
     if (success) {
-      _showDialog(context, "Usuario logueado correctamente");
+      _showSuccessDialog(context,'Correcto',"Usuario logueado correctamente");
     }
 
     else {
-      _showErrorDialog(context, 'Credenciales incorrectas. Inténtalo de nuevo.');
+      _showDialog(context,'Error','Credenciales incorrectas. Inténtalo de nuevo.');
     }
   }
 
@@ -30,11 +30,11 @@ class LoginController {
     return name == 'user' && password == 'password';
   }
 
-  void _showErrorDialog(BuildContext context, String message) {
+  void _showDialog(BuildContext context,String tittle, String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Error', style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold)),
+        title: Text(tittle, style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold)),
         content: Text(message),
         actions: [
           TextButton(
@@ -45,12 +45,11 @@ class LoginController {
       ),
     );
   }
-
-  void _showDialog(BuildContext context, String message) {
+  void _showSuccessDialog(BuildContext context,String tittle, String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Correcto', style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold,)),
+        title: Text(tittle, style: TextStyle(color: Color(0xFFA2F1A5), fontWeight: FontWeight.bold)),
         content: Text(message),
         actions: [
           TextButton(
