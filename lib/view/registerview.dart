@@ -1,12 +1,11 @@
 import 'package:escape_go_mobile/view/loginview.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widgets.dart';
+import 'package:escape_go_mobile/controller/registerController.dart';
 
 
 class RegisterScreen extends StatelessWidget {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final RegisterController controller=RegisterController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +41,7 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(
                     width: 300.0, // Cambia este valor para ajustar el ancho
                     child: TextField(
-                      controller: nameController,
+                      controller: controller.nameController,
                       decoration: InputDecoration(
                         hintText: 'Introduzca el nombre de usuario',
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
@@ -63,7 +62,7 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(
                     width: 300.0, // Cambia este valor para ajustar el ancho
                     child: TextField(
-                      controller: emailController,
+                      controller: controller.emailController,
                       decoration: InputDecoration(
                         hintText: 'Introduzca el correo electrónico',
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
@@ -84,7 +83,7 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(
                     width: 300.0, // Cambia este valor para ajustar el ancho
                     child: TextField(
-                      controller: passwordController,
+                      controller: controller.passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Introduzca la contraseña',
@@ -105,29 +104,13 @@ class RegisterScreen extends StatelessWidget {
                 value: 'Registrarse',
                 color: Color(0xFFA2DAF1),
                 onPressed: () {
-                  String name = nameController.text;
-                  String password = passwordController.text;
-                  String email = emailController.text;
+                  controller.register(context);
+                  controller.nameController.text='';
+                  controller.passwordController.text='';
+                  controller.emailController.text='';
 
-                  if (name.isNotEmpty && password.isNotEmpty & email.isNotEmpty) {
 
-                    Navigator.pop(context );
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Error',textAlign: TextAlign.center,style: TextStyle(color: Color(0xFFFFA1A1),fontWeight:FontWeight.bold ),),
-                        content: Text('Por favor, completa todos los campos.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text('OK',style: TextStyle(fontWeight: FontWeight.bold)),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
+                }
               ),
             ),
             Center(
@@ -149,8 +132,6 @@ class RegisterScreen extends StatelessWidget {
                   ],
                 )
             )
-
-
           ],
         ),
       ),
