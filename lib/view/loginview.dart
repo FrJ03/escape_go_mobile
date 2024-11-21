@@ -90,6 +90,7 @@ class LoginScreen extends StatelessWidget {
             Center(
               child:
               CustomButton(
+                key: Key('login_button'),
                 value: 'Iniciar sesión',
                 color: Color(0xFFA2DAF1),
                 onPressed: () {
