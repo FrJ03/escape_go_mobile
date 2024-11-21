@@ -77,6 +77,7 @@ class ProfileScreen extends StatelessWidget {
 							child: Column(
 								children: [
 									CustomButton(
+										key: Key('modify_profile_button'),
 										value: 'Modificar perfil',
 										color: Color(0xFFA2DAF1),
 										onPressed: () {
@@ -85,6 +86,7 @@ class ProfileScreen extends StatelessWidget {
 									),
 									SizedBox(height: 16),
 									CustomButton(
+										key: Key('delete_account_button'),
 										value: 'Eliminar cuenta',
 										color: Color(0xFFFFA1A1),
 										onPressed: () {
@@ -127,6 +129,7 @@ class ProfileScreen extends StatelessWidget {
 									),
 									SizedBox(height: 16),
 									CustomButton(
+										key: Key('logout_button'),
 										value:'Cerrar sesión',
 										color: Color(0xFFFFA1A1),
 										onPressed: () {
