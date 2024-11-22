@@ -37,7 +37,7 @@ class LoginScreen extends StatelessWidget {
             Center(child:Image.asset('lib/view/assets/logo.png',height: 150)),
             Center(
               child:
-            Text('Iniciar sesión',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+            Text('Iniciar sesión',key:Key('Tittle'),style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
             ),
             SizedBox(height: 30),
             Center(
