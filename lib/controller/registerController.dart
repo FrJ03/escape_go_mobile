@@ -19,12 +19,12 @@ class RegisterController {
     }
 
     //Esto es temporal, para probar que funciona correctamente
-    bool success = await _checking(email);
+    bool success = await _checking(email,name);
     if (success) {
       //Esto luego se hace llamando al servidor, pero de forma provisional se queda asi
       //si checking return success significa que se ha encontrado el correo.
       //No se puede registrar otra cuenta con el mismo correo
-      _showDialog(context,'Error','Este correo ya existe.');
+      _showDialog(context,'Error','El correo o el nombre de usuario introducido ya existe.');
     }
 
     else {
@@ -34,10 +34,18 @@ class RegisterController {
     }
   }
 
-  Future<bool> _checking(String email) async {
+  Future<bool> _checking(String email,String name) async {
     // Aquí iría la lógica para comunicarse con el servidor, la cual no está implementada todavía
     await Future.delayed(Duration(seconds: 2));  // Simula un tiempo de espera
-    return email == 'user@gmail.com';
+    if(name== 'user') {
+      return true;
+    }
+    else{
+      if(email=='user@gmail.com'){
+        return true;
+      }
+    }
+    return false;
   }
 
   bool isValidEmail(String email) {
