@@ -1,5 +1,16 @@
+// Archivo main.dart
 import 'package:flutter/material.dart';
 import 'widgets/widgets.dart';
+import 'loginview.dart';
+
+void main() {
+	runApp(MaterialApp(
+		home: ProfileScreen(),
+		theme: ThemeData(
+			fontFamily: 'Roboto',
+		),
+	));
+}
 
 class ProfileScreen extends StatelessWidget {
 	@override
@@ -10,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
 					'Mi perfil',
 					style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
 				),
-				backgroundColor: Color(0xFFA2DAF1), // Color corregido
+				backgroundColor: Color(0xFFA2DAF1),
 				centerTitle: true,
 			),
 			body: Container(
@@ -19,59 +30,15 @@ class ProfileScreen extends StatelessWidget {
 				child: Column(
 					crossAxisAlignment: CrossAxisAlignment.start,
 					children: [
-						Center(child:Image.asset('lib/view/assets/perfil.png',height: 150)),
+						Center(child: Image.asset('lib/view/assets/perfil.png', height: 150)),
 						SizedBox(height: 30),
-						Center(
-							child: Column(
-								crossAxisAlignment: CrossAxisAlignment.start,
-								mainAxisSize: MainAxisSize.min,
-								children: [
-									Text(
-										'Nombre de usuario:',
-										style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-									),
-								],
-							),
-						),
+						Center(child: buildProfileDetail('Nombre de usuario:')),
 						SizedBox(height: 30),
-						Center(
-							child: Column(
-								crossAxisAlignment: CrossAxisAlignment.start,
-								mainAxisSize: MainAxisSize.min,
-								children: [
-									Text(
-										'Email:',
-										style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-									),
-								],
-							),
-						),
+						Center(child: buildProfileDetail('Email:')),
 						SizedBox(height: 30),
-						Center(
-							child: Column(
-								crossAxisAlignment: CrossAxisAlignment.start,
-								mainAxisSize: MainAxisSize.min,
-								children: [
-									Text(
-										'Rango:',
-										style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-									),
-								],
-							),
-						),
+						Center(child: buildProfileDetail('Rango:')),
 						SizedBox(height: 30),
-						Center(
-							child: Column(
-								crossAxisAlignment: CrossAxisAlignment.start,
-								mainAxisSize: MainAxisSize.min,
-								children: [
-									Text(
-										'Puntos:',
-										style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-									),
-								],
-							),
-						),
+						Center(child: buildProfileDetail('Puntos:')),
 						SizedBox(height: 200),
 						Center(
 							child: Column(
@@ -89,91 +56,98 @@ class ProfileScreen extends StatelessWidget {
 										key: Key('delete_account_button'),
 										value: 'Eliminar cuenta',
 										color: Color(0xFFFFA1A1),
-										onPressed: () {
-											showDialog(
-												context: context,
-												builder: (context) => AlertDialog(
-													title: Text(
-														'¿Quieres borrar la cuenta?',
-														textAlign: TextAlign.center,
-														style: TextStyle(
-															color: Color(0xFFFFA1A1),
-															fontWeight: FontWeight.bold,
-														),
-													),
-													content: Text(
-															'Si eliminas la cuenta no podrás recuperarla. ¿Continuar?'),
-													actions: [
-														TextButton(
-															onPressed: () {
-																// Aquí se borra la cuenta
-																Navigator.pop(context);
-																print('Cuenta eliminada');
-															},
-															child: Text(
-																'Eliminar cuenta',
-																style: TextStyle(fontWeight: FontWeight.bold),
-															),
-														),
-														TextButton(
-															onPressed: () => Navigator.pop(context),
-															child: Text(
-																'Cancelar',
-																style: TextStyle(fontWeight: FontWeight.bold),
-															),
-														),
-													],
-												),
-											);
-										},
+										onPressed: () => showDeleteAccountDialog(context),
 									),
 									SizedBox(height: 16),
 									CustomButton(
 										key: Key('logout_button'),
-										value:'Cerrar sesión',
+										value: 'Cerrar sesión',
 										color: Color(0xFFFFA1A1),
-										onPressed: () {
-											showDialog(
-												context: context,
-												builder: (context) => AlertDialog(
-													title: Text(
-														'¿Quieres cerrar sesión?',
-														textAlign: TextAlign.center,
-														style: TextStyle(
-															color: Color(0xFFFFA1A1),
-															fontWeight: FontWeight.bold,
-														),
-													),
-													content:
-													Text('¿Cerrar sesión en el dispositivo?'),
-													actions: [
-														TextButton(
-															onPressed: () {
-																Navigator.pop(context);
-																print('Sesión cerrada');
-															},
-															child: Text(
-																'Cerrar sesión',
-																style: TextStyle(fontWeight: FontWeight.bold),
-															),
-														),
-														TextButton(
-															onPressed: () => Navigator.pop(context),
-															child: Text(
-																'Cancelar',
-																style: TextStyle(fontWeight: FontWeight.bold),
-															),
-														),
-													],
-												),
-											);
-										},
+										onPressed: () => showLogoutDialog(context),
 									),
 								],
 							),
 						),
 					],
 				),
+			),
+		);
+	}
+
+	Widget buildProfileDetail(String title) {
+		return Column(
+			crossAxisAlignment: CrossAxisAlignment.start,
+			mainAxisSize: MainAxisSize.min,
+			children: [
+				Text(
+					title,
+					style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+				),
+			],
+		);
+	}
+
+	void showDeleteAccountDialog(BuildContext context) {
+		showDialog(
+			context: context,
+			builder: (context) => AlertDialog(
+				title: Text(
+					'¿Quieres borrar la cuenta?',
+					textAlign: TextAlign.center,
+					style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold),
+				),
+				content: Text('Si eliminas la cuenta no podrás recuperarla. ¿Continuar?'),
+				actions: [
+					TextButton(
+						onPressed: () {
+							FocusScope.of(context).unfocus();
+							Navigator.pushAndRemoveUntil(
+								context,
+								MaterialPageRoute(builder: (context) => LoginScreen()),
+										(route) => false,
+							);
+						},
+						child: Text('Eliminar cuenta', style: TextStyle(fontWeight: FontWeight.bold)),
+					),
+					TextButton(
+						onPressed: () => Navigator.pop(context),
+						child: Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
+					),
+				],
+			),
+		);
+	}
+
+	void showLogoutDialog(BuildContext context) {
+		showDialog(
+			context: context,
+			builder: (context) => AlertDialog(
+				title: Text(
+					'¿Quieres cerrar sesión?',
+					textAlign: TextAlign.center,
+					style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold),
+				),
+				content: Text('Si pulsas cerrar sesión tendrás que volver a iniciar sesión.'),
+				actions: [
+					TextButton(
+						onPressed: () {
+							FocusScope.of(context).unfocus();
+							Navigator.pushAndRemoveUntil(
+								context,
+								MaterialPageRoute(builder: (context) => LoginScreen()),
+										(route) => false,
+							);
+						},
+						child: Text('Cerrar sesión', style: TextStyle(fontWeight: FontWeight.bold)),
+					),
+					TextButton(
+						onPressed: () {
+							FocusScope.of(context).unfocus();
+							Navigator.pop(context);
+						},
+						child: Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
+					),
+				],
 			),
 		);
 	}
