@@ -1,4 +1,3 @@
-// Archivo main.dart
 import 'package:flutter/material.dart';
 import 'widgets/widgets.dart';
 import 'loginview.dart';
