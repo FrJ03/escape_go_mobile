@@ -25,7 +25,6 @@ void main() {
 
 		final page = find.text('Iniciar sesión')
 		expect(page, findsOneWidget);
-		
 		// sigue en la página de login, acceso restringido
   	});
 
