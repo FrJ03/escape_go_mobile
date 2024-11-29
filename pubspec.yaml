@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-feat: add image_picker dependency to pubspec.yaml
+  image_picker: ^1.0.6
 
 
 
