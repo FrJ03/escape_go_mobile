@@ -16,7 +16,7 @@ class EscapeRoomsScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Mis Escape Rooms',
+          'Escape Rooms',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         backgroundColor: Color(0xFFA2DAF1),
