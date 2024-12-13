@@ -1,9 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:escape_go_mobile/view/loginview.dart';
 
 class RegisterController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  
+  final String baseUrl = 'http://192.168.18.72:3000'; // ¡Cambiar direccion IP! 
+  //La direccion IP deberiamos ponerla en el .env
+  
   Future<void> register(BuildContext context) async {
     String name = nameController.text.trim();
     String password = passwordController.text.trim();
@@ -18,34 +25,42 @@ class RegisterController {
       return;
     }
 
-    //Esto es temporal, para probar que funciona correctamente
-    bool success = await _checking(email,name);
-    if (success) {
-      //Esto luego se hace llamando al servidor, pero de forma provisional se queda asi
-      //si checking return success significa que se ha encontrado el correo.
-      //No se puede registrar otra cuenta con el mismo correo
-      _showDialog(context,'Error','El correo o el nombre de usuario introducido ya existe.');
-    }
+  try {
+      final response = await _registerWithServer(email, name, password);
+      if (response.statusCode == 200) {
+        // Registro exitoso
+        _showSuccessDialog(context, 'Correcto', 'Usuario $name registrado correctamente.');
+        
+        // Redirige al loginView después del registro exitoso
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
 
-    else {
-      //Igual esto
-      _showSuccessDialog(context, 'Correcto',' $name registrado correctamente.');
-
+      } else if (response.statusCode == 409) {
+        // Conflicto (correo o usuario ya existente)
+        _showDialog(context, 'Error', 'El correo o el nombre de usuario ya existe.');
+      } else {
+        // Otro error
+        _showDialog(context, 'Error', 'Error al registrar usuario: ${response.body}');
+      }
+    } catch (e) {
+      _showDialog(context, 'Error', 'Error al conectar con el servidor: $e');
     }
   }
 
-  Future<bool> _checking(String email,String name) async {
-    // Aquí iría la lógica para comunicarse con el servidor, la cual no está implementada todavía
-    await Future.delayed(Duration(seconds: 2));  // Simula un tiempo de espera
-    if(name== 'user') {
-      return true;
-    }
-    else{
-      if(email=='user@gmail.com'){
-        return true;
-      }
-    }
-    return false;
+  Future<http.Response> _registerWithServer(String email, String name, String password) async {
+    final url = Uri.parse('$baseUrl/account/signup');
+    final headers = <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    final body = jsonEncode(<String, String>{
+      'email': email,
+      'username': name,
+      'password': password,
+    });
+
+    return await http.post(url, headers: headers, body: body);
   }
 
   bool isValidEmail(String email) {

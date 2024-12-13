@@ -121,8 +121,8 @@ class RegisterScreen extends StatelessWidget {
                   key: Key('register_button'),
                   value: 'Registrarse',
                   color: Color(0xFFA2DAF1),
-                  onPressed: () {
-                    controller.register(context);
+                  onPressed: () async {
+                    await controller.register(context);
                     controller.nameController.text = '';
                     controller.passwordController.text = '';
                     controller.emailController.text = '';
