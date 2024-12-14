@@ -56,6 +56,20 @@ class _CreateEscapeRoomScreenState extends State<CreateEscapeRoomScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+                'Nombre de la pista:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: controller.nameController,
+                maxLines: 1,
+                decoration: InputDecoration(
+                  hintText: 'Escribe el nombre de la pista...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
                 'Historia:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -69,23 +83,11 @@ class _CreateEscapeRoomScreenState extends State<CreateEscapeRoomScreen> {
                 ),
               ),
               SizedBox(height: 8),
-              Row(
-                children: [
-                  Checkbox(
-                    value: controller.requiresNFC,
-                    onChanged: (value) {
-                      setState(() {
-                        controller.requiresNFC = value!;
-                      });
-                    },
-                  ),
-                  Text('¿Es necesario escanear un tag NFC?'),
-                ],
-              ),
+
               SizedBox(height: 16),
               Center(
                 child: CustomButton(
-                  value: 'GUARDAR FRAGMENTO',
+                  value: 'GUARDAR PISTA',
                   color: Color(0xFFA2F1A5),
                   onPressed: () => setState(() {
                     controller.addFragment(() {
@@ -97,7 +99,7 @@ class _CreateEscapeRoomScreenState extends State<CreateEscapeRoomScreen> {
 
               SizedBox(height: 16),
               Text(
-                'Fragmentos creados:',
+                'Pistas creadas:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               ...controller.fragments.asMap().entries.map((entry) {
@@ -107,9 +109,9 @@ class _CreateEscapeRoomScreenState extends State<CreateEscapeRoomScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Card(
                     child: ListTile(
-                      title: Text('Fragmento ${index + 1}'),
+                      title: Text('$index ${fragment['name']}'),
                       subtitle: Text(
-                        '${fragment['story']}\nRequiere NFC: ${fragment['requiresNFC'] ? 'Sí' : 'No'}',
+                        '${fragment['info']}',
                       ),
                     ),
                   ),
