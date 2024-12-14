@@ -45,14 +45,14 @@ class LoginScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start, // Alinea el texto y el campo de entrada a la izquierda dentro del ancho definido
                 mainAxisSize: MainAxisSize.min, // Ajusta la altura de la columna a sus contenidos
                 children: [
-                  Text('Usuario:',style:  TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
+                  Text('Email:',style:  TextStyle(fontWeight: FontWeight.bold,fontSize: 17)),
                   SizedBox(height: 8),
                   SizedBox(
                     width: 300.0, // Cambia este valor para ajustar el ancho
                     child: TextField(
                       controller: controller.nameController,
                       decoration: InputDecoration(
-                        hintText: 'Introduzca el nombre de usuario',
+                        hintText: 'Introduzca el email',
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
                       ),
                     ),
