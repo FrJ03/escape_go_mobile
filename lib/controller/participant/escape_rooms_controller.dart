@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 class EscapeRoomsController{
-  Future<EscapeRoomListItem> getEscapeRooms() async {
+  Future<List<EscapeRoomListItem>> getEscapeRooms() async {
     Position position = await _getLocation();
 
     String coordinates = _positionToString(position);
@@ -16,8 +16,14 @@ class EscapeRoomsController{
     http.Response response = await http.post(Uri.parse('http://localhost:3000/escaperoom/proximity'), body: body);
 
     if(response.statusCode == 200){
+      final json = jsonDecode(response.body);
+      List<EscapeRoomListItem> list = [];
 
-      return EscapeRoomListItem.fromJson(jsonDecode(response.body).escape_rooms as Map<String, dynamic>);
+      for (final escapeRoom in json.escape_rooms){
+        list.add(EscapeRoomListItem.fromJson(escapeRoom as Map<String, dynamic>));
+      }
+
+      return list;
     }
     else if(response.statusCode == 400 || response.statusCode == 500){
       return Future.error('Error<${response.statusCode}>: get escape rooms by distance');
