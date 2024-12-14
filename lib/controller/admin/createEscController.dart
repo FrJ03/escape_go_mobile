@@ -1,30 +1,50 @@
 import 'package:flutter/material.dart';
 import '../../view/admin/panel_admin.dart';
-
+import '../../view/admin/create_escape2.dart';
 class CreateEscController {
   final TextEditingController tittleController = TextEditingController();
-  final TextEditingController objController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   final TextEditingController levelController = TextEditingController();
-  final TextEditingController advertController = TextEditingController();
-  final TextEditingController premioController = TextEditingController();
-  final TextEditingController timeController = TextEditingController();
-
+  final TextEditingController solutionController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  List<Map<String, dynamic>> infoEscape = [];
 
   Future<void> recoger(BuildContext context) async {
     String tittle = tittleController.text;
-    String objective = objController.text;
+    String description = descriptionController.text;
     String level = levelController.text;
-    String advert = advertController.text;
-    String premio = premioController.text;
-    String time = timeController.text;
+    String solution = solutionController.text;
+    String price = priceController.text;
 
 
-    if (tittle.isEmpty || objective.isEmpty || level.isEmpty ||
-        advert.isEmpty || premio.isEmpty || time.isEmpty) {
+
+    if (tittle.isEmpty || description.isEmpty || level.isEmpty ||
+        solution.isEmpty || price.isEmpty ) {
       _showDialog(context, 'Error', 'Por favor, completa todos los campos.');
       return;
     }
-  }
+    else {
+      infoEscape.add({
+        'title': tittle,
+        'description': description,
+        'solution': solution,
+        'difficulty':level,
+        'price':price,
+      }
+      );
+      tittleController.clear();
+      descriptionController.clear();
+      solutionController.clear();
+      levelController.clear();
+      priceController.clear();
+      // Navega a la pantalla principal después de loguearse correctamente
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => CreateEscapeRoomScreen()),
+      );
+    }
+    }
+
 
 
   void _showDialog(
