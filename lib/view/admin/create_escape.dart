@@ -36,8 +36,6 @@ class CreateEscapeScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(height: 16),
-                    ImagePickerWidget(),
-                    SizedBox(height: 16),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: TextField(
@@ -51,9 +49,9 @@ class CreateEscapeScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
                       context,
-                      label: 'Objetivo:',
-                      controller: controller.objController,
-                      hintText: 'Introduzca el objetivo del Escape Room',
+                      label: 'Descripción:',
+                      controller: controller.descriptionController,
+                      hintText: 'Introduzca una descripción',
                     ),
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
@@ -65,24 +63,18 @@ class CreateEscapeScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
                       context,
-                      label: 'Advertencia:',
-                      controller: controller.advertController,
-                      hintText: 'Introduzca las advertencias del Escape Room',
+                      label: 'Solución :',
+                      controller: controller.solutionController,
+                      hintText: 'Introduzca la solución del Escape Room',
                     ),
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
                       context,
-                      label: 'Premio:',
-                      controller: controller.premioController,
-                      hintText: 'Introduzca el premio del Escape Room',
+                      label: 'Precio:',
+                      controller: controller.priceController,
+                      hintText: 'Introduzca el precio del Escape Room',
                     ),
-                    SizedBox(height: 16),
-                    _buildRowWithLabelAndTextField(
-                      context,
-                      label: 'Límite de tiempo:',
-                      controller: controller.timeController,
-                      hintText: 'Introduzca el límite de tiempo',
-                    ),
+
                   ],
                 ),
               ),
@@ -100,7 +92,8 @@ class CreateEscapeScreen extends StatelessWidget {
                     key: Key('cancel_esc_button'),
                     value: 'CANCELAR',
                     color: Color(0xFFFFA1A1),
-                    onPressed: () => controller.confirmCancel(context),
+                    onPressed: ()=> print('hola'),
+                    //onPressed: () => controller.confirmCancel(context),
                   ),
                 ],
               ),
