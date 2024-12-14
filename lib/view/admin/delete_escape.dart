@@ -11,7 +11,7 @@ void main() {
 }
 
 // stateful para cambiar el estado y que se muestren seleccionados
-class DeleteDeleteEscapeRoomsScreen extends StatefulWidget {
+class DeleteEscapeRoomsScreen extends StatefulWidget {
   @override
   _DeleteEscapeRoomsScreenState createState() => _DeleteEscapeRoomsScreenState();
 }
