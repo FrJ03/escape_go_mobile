@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 
 class EscapeRoomController {
   final TextEditingController storyController = TextEditingController();
-  bool requiresNFC = false;
+  final TextEditingController nameController = TextEditingController();
   List<Map<String, dynamic>> fragments = [];
 
   void addFragment(Function showError) {
-    if (storyController.text.isNotEmpty) {
+    if (storyController.text.isNotEmpty && nameController.text.isNotEmpty ) {
       fragments.add({
-        'story': storyController.text,
-        'requiresNFC': requiresNFC,
+        'info': storyController.text,
+        'name': nameController.text,
+
       });
       storyController.clear();
-      requiresNFC = false;
+      nameController.clear();
     } else {
       showError();
     }
