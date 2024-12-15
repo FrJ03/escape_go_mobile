@@ -4,13 +4,15 @@ class Location{
   final _street;
   final _streetNumber;
   final _coordinates;
+  final _info;
 
   const Location(
     this._country,
     this._city,
     this._street,
     this._streetNumber,
-    this._coordinates
+    this._coordinates,
+    this._info,
   );
 
   factory Location.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class Location{
           street,
           streetNumber,
           coordinates,
+          ''
         );
       default:
         throw const FormatException('Failed to load location.');
@@ -39,4 +42,5 @@ class Location{
   String get street => this._street;
   int get streetNumber => this._streetNumber;
   String get coordinates => this._coordinates;
+  String get info => this._info;
 }
