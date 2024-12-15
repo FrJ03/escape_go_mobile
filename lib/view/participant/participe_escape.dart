@@ -11,8 +11,15 @@ void main() {
   ));
 }
 
-class ParticipateEscapeScreen extends StatelessWidget {
+class ParticipateEscapeScreen extends StatefulWidget {
+  @override
+  _ParticipateEscapeScreenState createState() =>
+      _ParticipateEscapeScreenState();
+}
+
+class _ParticipateEscapeScreenState extends State<ParticipateEscapeScreen> {
   final ParticipateEscController controller = ParticipateEscController();
+  DateTime? selectedSession;
 
   @override
   Widget build(BuildContext context) {
@@ -44,31 +51,54 @@ class ParticipateEscapeScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     Text(
                       controller.description,
-                      style: TextStyle( fontSize: 20),
+                      style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
-
                     SizedBox(height: 16),
                     Text(
                       'Nivel de dificultad:',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     Text(
                       controller.level,
-                      style: TextStyle( fontSize: 20),
+                      style: TextStyle(fontSize: 20),
                     ),
-
                     SizedBox(height: 16),
                     Text(
                       'Precio',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     Text(
-                      controller.price.toString(),
-                      style: TextStyle( fontSize: 20),
+                      '${(controller.price / 100).toString()}€',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Sesiones',
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                   ],
                 ),
+              ),
+              // Usamos el método del controlador para generar los ListTile
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: controller.dates.length,
+                itemBuilder: (context, index) {
+                  return controller.buildSessionTile(
+                    session: controller.dates[index],
+                    selectedSession: selectedSession,
+                    onSelected: (DateTime? value) {
+                      setState(() {
+                        selectedSession = value;
+                      });
+                    },
+                  );
+                },
               ),
               SizedBox(height: 50),
               Row(
@@ -78,9 +108,18 @@ class ParticipateEscapeScreen extends StatelessWidget {
                     key: Key('participe_esc_button'),
                     value: 'INICIAR',
                     color: Color(0xFFA2F1A5),
-                    onPressed: () => controller.participe(context),
+                    onPressed: () {
+                      if (selectedSession != null) {
+                        controller.participe(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Por favor, selecciona una sesión."),
+                          ),
+                        );
+                      }
+                    },
                   ),
-
                 ],
               ),
             ],
@@ -89,6 +128,4 @@ class ParticipateEscapeScreen extends StatelessWidget {
       ),
     );
   }
-
 }
-
