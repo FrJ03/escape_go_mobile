@@ -1,17 +1,17 @@
 class Location{
-  final country;
-  final city;
-  final street;
-  final streetNumber;
-  final coordinates;
+  final _country;
+  final _city;
+  final _street;
+  final _streetNumber;
+  final _coordinates;
 
-  const Location({
-    required this.country,
-    required this.city,
-    required this.street,
-    required this.streetNumber,
-    required this.coordinates
-  });
+  const Location(
+    this._country,
+    this._city,
+    this._street,
+    this._streetNumber,
+    this._coordinates
+  );
 
   factory Location.fromJson(Map<String, dynamic> json) {
     switch (json) {
@@ -23,14 +23,20 @@ class Location{
       'coordinates': String coordinates
       }:
         return Location(
-          country: country,
-          city: city,
-          street: street,
-          streetNumber: streetNumber,
-          coordinates: coordinates,
+          country,
+          city,
+          street,
+          streetNumber,
+          coordinates,
         );
       default:
         throw const FormatException('Failed to load location.');
     }
   }
+
+  String get country => this._country;
+  String get city => this._city;
+  String get street => this._street;
+  int get streetNumber => this._streetNumber;
+  String get coordinates => this._coordinates;
 }
