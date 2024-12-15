@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:escape_go_mobile/domain/escape_room_list_item.dart';
+import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
