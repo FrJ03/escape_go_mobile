@@ -10,8 +10,31 @@ class ParticipateEscController {
   final  String level = 'Avanzado';
   final String solution = 'Solución ';
   final int price = 245;
+  //Sesiones
+  //Aqui iría la llamada a la API
+  final List<DateTime> dates = [];
+  // Constructor para inicializar la lista con una fecha
+  ParticipateEscController() {
+    dates.add(DateTime(2024, 1, 1));
+    dates.add(DateTime(2024, 3, 23));
+  }
+  Widget buildSessionTile({
+    required DateTime session,
+    required DateTime? selectedSession,
+    required ValueChanged<DateTime?> onSelected,
+  }) {
+    final formattedDate =
+        "${session.year}-${session.month.toString().padLeft(2, '0')}-${session.day.toString().padLeft(2, '0')}";
 
-
+    return ListTile(
+      title: Text(formattedDate),
+      leading: Radio<DateTime>(
+        value: session,
+        groupValue: selectedSession,
+        onChanged: onSelected, // Se llama al callback al seleccionar
+      ),
+    );
+  }
 
 
    Future <void> participe(BuildContext context) async{
