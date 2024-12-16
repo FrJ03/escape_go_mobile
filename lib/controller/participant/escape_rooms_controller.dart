@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:escape_go_mobile/domain/escape_rooms/escape_room.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
+import 'package:escape_go_mobile/domain/escape_rooms/participation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +28,28 @@ class EscapeRoomsController{
       return list;
     }
     else if(response.statusCode == 400 || response.statusCode == 500){
+      return Future.error('Error<${response.statusCode}>: get escape rooms by distance');
+    }
+    else{
+      return Future.error('Error<unknown>: get escape rooms by distance');
+    }
+  }
+  Future<(EscapeRoom, List<Participation>)> getEscapeRoom(int id) async {
+    http.Response response = await http.get(Uri.parse('http://localhost:3000/escaperoom/info?id=$id'));
+
+    if(response.statusCode == 200){
+      final escapeRoom = EscapeRoom.fromJson(jsonDecode(response.body).escape_room as Map<String, dynamic>);
+      List<Participation> participationList = [];
+
+      final json = jsonDecode(response.body);
+
+      for (final participation in json.participations){
+        participationList.add(Participation.fromJson(participation as Map<String, dynamic>));
+      }
+
+      return (escapeRoom, participationList);
+    }
+    else if(response.statusCode == 400 || response.statusCode == 404){
       return Future.error('Error<${response.statusCode}>: get escape rooms by distance');
     }
     else{
