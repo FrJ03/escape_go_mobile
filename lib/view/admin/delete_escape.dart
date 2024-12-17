@@ -1,38 +1,41 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
+import '../../controller/participant/escape_room_data.dart';
+import '../../controller/admin/deleteEscController.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: DeleteEscapeRoomsScreen(),
-    theme: ThemeData(
-      fontFamily: 'Roboto',
-    ),
-  ));
-}
-
-// stateful para cambiar el estado y que se muestren seleccionados
 class DeleteEscapeRoomsScreen extends StatefulWidget {
   @override
   _DeleteEscapeRoomsScreenState createState() => _DeleteEscapeRoomsScreenState();
 }
 
 class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
-  // Lista para rastrear los IDs seleccionados
+  final EscapeRoomController controller = EscapeRoomController();
   final Set<int> selectedRows = {};
+  List<Map<String, String>> escapeRooms = [];
+  bool isLoading = true; // Indica si estamos cargando datos
+  String? errorMessage;
 
-  // Lista con DATOS DE EJEMPLO de escape rooms, tomar datos de los escape rooms que hayan sido creados por el usuario
-  final List<Map<String, String>> escapeRooms = [
-    {
-      'title': 'Escape Room 1',
-      'description': 'Descripción del Escape Room aqui se pone la descripcion y si hay mucho texto lo limita para que no se pase la pantalla porque si hay mucho texto es un rollo',
-      'imagePath': 'lib/view/assets/logo.png',
-    },
-    {
-      'title': 'Escape Room 2',
-      'description': 'Descripción del Escape Room 2 más cortita',
-      'imagePath': 'lib/view/assets/logo.png',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchEscapeRooms();
+  }
+
+  Future<void> _fetchEscapeRooms() async {
+    // intenta tomar los datos de los escape rooms
+    try {
+      final rooms = await controller.fetchEscapeRoomDetails();
+      setState(() {
+        escapeRooms = rooms;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = 'Error al cargar los escape rooms: $e';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,51 +48,55 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: escapeRooms.length,
-              itemBuilder: (context, index) {
-                final room = escapeRooms[index];
-                final isSelected = selectedRows.contains(index);
-                // detecta que se ha seleccionado un escape room
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedRows.remove(index);
-                      } else {
-                        selectedRows.add(index);
-                      }
-                    });
-                  },
-                  child: Row1(
-                    title: room['title']!,
-                    description: room['description']!,
-                    imagePath: room['imagePath']!,
-                    isSelected: isSelected,
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(height: 20),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedRows.isNotEmpty
-                    ? Color(0xFFFFA1A1)
-                    : Colors.grey,
-              ),
-              onPressed: selectedRows.isNotEmpty
-                  ? () => _showDeleteDialog(context)
-                  : null,
-              child: Text('Eliminar'),
-            ),
-          ),
-        ],
-      ),
+      // se pone un simbolo de carga para simular que esta cargando los datos
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : errorMessage != null
+              ? Center(child: Text(errorMessage!))
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: escapeRooms.length,
+                        itemBuilder: (context, index) {
+                          final room = escapeRooms[index];
+                          final isSelected = selectedRows.contains(index);
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  selectedRows.remove(index);
+                                } else {
+                                  selectedRows.add(index);
+                                }
+                              });
+                            },
+                            child: Row1(
+                              title: room['title']!,
+                              description: room['description']!,
+                              imagePath: room['imagePath']!,
+                              isSelected: isSelected,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: selectedRows.isNotEmpty
+                              ? Color(0xFFFFA1A1)
+                              : Colors.grey,
+                        ),
+                        onPressed: selectedRows.isNotEmpty
+                            ? () => _showDeleteDialog(context)
+                            : null,
+                        child: Text('Eliminar'),
+                      ),
+                    ),
+                  ],
+                ),
     );
   }
 
@@ -103,16 +110,35 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
           style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold),
         ),
         content: Text(
-            'Vas a eliminar el Escape Room seleccionado. ¿Estás seguro?'),
+            'Vas a eliminar el Escape Room(s) seleccionado(s). ¿Estás seguro?'),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               FocusScope.of(context).unfocus();
+              Navigator.pop(context);
+              try {
+                // Obtiene IDS de seleccionados
+                List<int> selectedIds = selectedRows.toList();
+                // Llama al controlador para eliminar los seleccionados
+                await controller.deleteEscapeRooms(selectedIds);
+                // Actualiza el estado para eliminar visualmente
+                setState(() {
+                  escapeRooms.removeWhere((_, index) => selectedRows.contains(index));
+                  selectedRows.clear();
+                });
+                // ÉXITO
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Escape Rooms eliminados con éxito')),
+                );
+              } catch (e) {
+                // SI HUBO UN ERROR
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Hubo un error desconocido')),
+                );
+              }
               setState(() {
                 selectedRows.clear();
               });
-              // ELIMINAR EL ESCAPE ROOM
-              Navigator.pop(context);
             },
             child: Text('Eliminar', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
@@ -169,8 +195,8 @@ class Row1 extends StatelessWidget {
                 Text(
                   description,
                   textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis, // Limita texto largo
-                  maxLines: 3, // Número máximo de líneas visibles
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                 ),
               ],
             ),
