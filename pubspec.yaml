@@ -73,6 +73,7 @@ flutter:
     - lib/view/assets/perfil.png
     - lib/view/assets/eliminar_escape.png
     - lib/view/assets/modificar_escape.png
+    - lib/view/assets/estadistica.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
