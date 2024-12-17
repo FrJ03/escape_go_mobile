@@ -65,7 +65,7 @@ class EscapeRoomScreen extends StatelessWidget {
           SizedBox(height: 30),
           Center(child: buildDetail('Advertencias: ${data['warnings']}')),
           SizedBox(height: 30),
-          Center(child: buildDetail('Premio: ${data['prize']}')),
+          Center(child: buildDetail('Premio: ${data['price']}')),
           SizedBox(height: 30),
           Center(child: buildDetail('Límite de tiempo: ${data['timeLimit']}')),
           SizedBox(height: 50),
