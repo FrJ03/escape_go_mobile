@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
 import '../profileview.dart';
-
+import 'statistics.dart';
 void main() {
   runApp(MaterialApp(
     home: PanelScreen(),
@@ -141,6 +141,29 @@ class PanelScreen extends StatelessWidget {
                             onPressed: (){
                               print('Debe redireccionar a mis Escape Rooms');
 
+                            }
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Image.asset(
+                        'lib/view/assets/estadistica.png', // Ruta de tu imagen
+                        width: 100,
+                        height: 100,
+                      ),
+                      SizedBox(width: 10), // Espaciado entre imagen y botón
+                      Expanded(
+                        child: PanelButton(
+                            key: Key('statistics_button'),
+                            value: 'Estadísticas',
+                            color: Color(0xFFA2DAF1),
+                            onPressed: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => StatisticsScreen()),
+                              );
                             }
                         ),
                       ),
