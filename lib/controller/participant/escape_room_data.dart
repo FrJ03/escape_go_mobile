@@ -13,7 +13,7 @@ class EscapeRoomController {
       'objective': 'Escapar.',
       'difficulty': 'Intermedio',
       'warnings': 'Nada.',
-      'prize': '20 puntos.',
+      'price': '20',
       'timeLimit': '60 minutos',
       'imagePath': 'lib/view/assets/logo.png',
     };
