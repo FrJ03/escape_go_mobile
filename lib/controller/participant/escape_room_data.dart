@@ -7,16 +7,20 @@ class EscapeRoomController {
     await Future.delayed(Duration(seconds: 2));
 
     // SIMULACION DE DATOS OBTENIDOS DEL BACKEND, DUMMY TEXT
-    return {
-      'title': 'Escapa de la mansión',
-      'description': 'Escapa de la mansión antes de que termine el tiempo.',
-      'objective': 'Escapar.',
-      'difficulty': 'Intermedio',
-      'warnings': 'Nada.',
-      'price': '20',
-      'timeLimit': '60 minutos',
-      'imagePath': 'lib/view/assets/logo.png',
-    };
+    return [
+      {
+        'id': 1,
+        'title': 'Escapa de la mansión',
+        'description': 'Descripción del Escape Room 1 muy larga para ver como funciona lo de cortar las descripciones largas porque si el texto es muy largo llena mucho la pantalla asi que se deja como maximo que la descripcion ocupe 3 lineas asi que a ver si recorta esta descripcion y como se ve',
+        'imagePath': 'lib/view/assets/logo.png',
+      },
+      {
+        'id': 2,
+        'title': 'Escape Room 2',
+        'description': 'Descripción del Escape Room 2 más cortita',
+        'imagePath': 'lib/view/assets/logo.png',
+      },
+    ];
   }
 }
 
