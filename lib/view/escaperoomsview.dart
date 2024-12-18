@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'widgets/widgets.dart';
+import'../controller/admin/escape_room_controller.dart';
+import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -10,9 +11,11 @@ void main() {
   ));
 }
 
-class EscapeRoomsScreen extends StatelessWidget{
+class EscapeRoomsScreen extends StatelessWidget {
+  final EscapeRoomController _controller = EscapeRoomController();
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -22,30 +25,65 @@ class EscapeRoomsScreen extends StatelessWidget{
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),
+      body: FutureBuilder<List<EscapeRoomListItem>>(
+        future: _controller.getEscapeRooms(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator()); // Indicador de carga
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                'No se encontraron escape rooms cerca.',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
+          }
 
+          final escapeRooms = snapshot.data!;
 
-
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(10.0),
-        alignment: Alignment.centerLeft,
-        child: ListView(
-          children: [
-            Row1(),
-          ]
-        ),
+          return ListView.builder(
+            padding: const EdgeInsets.all(10.0),
+            itemCount: escapeRooms.length,
+            itemBuilder: (context, index) {
+              final escapeRoom = escapeRooms[index];
+              return EscapeRoomRow(escapeRoom: escapeRoom);
+            },
+          );
+        },
       ),
     );
   }
 }
 
-class Row1 extends StatelessWidget{
+class EscapeRoomRow extends StatelessWidget {
+  final EscapeRoomListItem escapeRoom;
+
+  const EscapeRoomRow({required this.escapeRoom});
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       padding: const EdgeInsets.all(10.0),
-      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Image.asset('lib/view/assets/logo.png', height: 70),
@@ -55,22 +93,15 @@ class Row1 extends StatelessWidget{
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Título de Escape Room',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  escapeRoom.title, // Muestra el título del escape room
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 SizedBox(height: 5),
-                Text(
-                  'Descripción del Escape Room aqui se pone la descripcion y si hay mucho texto lo limita para que no se pase la pantalla porque si hay mucho texto es un rollo',
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis, // Limita texto largo
-                  maxLines: 3, // Número máximo de líneas visibles
-                ),
               ],
             ),
           ),
         ],
-      )
-    // POR CADA ESCAPE ROOM QUE EXISTA SE CREA UN ROW DONDE SE PONEN SUS DATOS
+      ),
     );
   }
 }

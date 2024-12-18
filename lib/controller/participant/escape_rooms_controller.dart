@@ -95,7 +95,7 @@ class EscapeRoomsController{
     }
 
     if(permission == LocationPermission.deniedForever){
-      return Future.error('Location permissions are permanentñy denied, we cannot request permissions.');
+      return Future.error('Location permissions are permanenty denied, we cannot request permissions.');
     }
 
     return await Geolocator.getCurrentPosition();

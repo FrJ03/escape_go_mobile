@@ -12,39 +12,24 @@ class ModifyEscapeController {
   List<Map<String, dynamic>> infoEscape = [];
 
   //Simulamos que estos son los datos que hemos cogido al llamar al backend
-  String tittle = 'Escapa de la mansión';
-  String description = 'Escapa de la mansión en menos de media hora para conseguir un premio';
-  String level = 'Intermedio';
-  String solution = 'Se ha escapado de la mansión correctamente';
-  String price = '492';
+  //Hay que pasarle el id por url
+  String id = '';
+  String tittle = '';
+  String description = '';
+  String level = '';
+  String solution = '';
+  String price = '';
 
 
   Future<void> recoger(BuildContext context) async {
 
-    if(tittleController.text.isNotEmpty) {
-      tittle = tittleController.text;
-    }
-    if(descriptionController.text.isNotEmpty) {
-      description = descriptionController.text;
-    }
-    if(levelController.text.isNotEmpty) {
-      level = levelController.text;
-    }
-    if(solutionController.text.isNotEmpty) {
-      solution = solutionController.text;
-    }
-    if(priceController.text.isNotEmpty) {
-      price = priceController.text;
-    }
 
-      infoEscape.add({
-        'title': tittle,
-        'description': description,
-        'solution': solution,
-        'difficulty':level,
-        'price':price,
-      }
-      );
+        tittle= tittleController.toString();
+        description=descriptionController.toString();
+        solution=solutionController.toString();
+        level=levelController.toString();
+        price=priceController.toString();
+
     //Esto es solo para ver si se modifica bien en el frontend
       _showDialog(context, 'Información del Escape', infoEscape.toString());
       tittleController.clear();
