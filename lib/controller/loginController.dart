@@ -1,25 +1,26 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:escape_go_mobile/view/escaperoomsview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:escape_go_mobile/view/escaperoomview.dart';
 
 class LoginController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  final String baseUrl = 'http://192.168.18.72:3000'; // ¡Cambiar direccion IP!
+  final String baseUrl = 'http://192.168.0.15:3000'; // ¡Cambiar direccion IP!
 
   Future<void> login(BuildContext context) async {
     String email = nameController.text;
     String password = passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      _showDialog(context,'Error','Por favor, completa todos los campos.');
+      _showDialog(context, 'Error', 'Por favor, completa todos los campos.');
       return;
     }
 
     if (!isValidEmail(email)) {
-      _showDialog(context,'Error','Por favor, introduce un correo válido de Gmail.');
+      _showDialog(context, 'Error', 'Por favor, introduce un correo válido de Gmail.');
       return;
     }
 
@@ -27,15 +28,21 @@ class LoginController {
       final response = await _loginWithServer(email, password);
 
       if (response.statusCode == 200) {
-        // Login exitoso
-        _showSuccessDialog(context, 'Correcto', 'Usuario logueado correctamente.');
-        
-        // Navega a la pantalla principal después de loguearse correctamente
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => EscapeRoomsScreen()),
-        );
+        final data = json.decode(response.body); // Decodifica el JSON
+        final token = data['token']; // Obtén el token
+        if (token != null) {
+          // Almacena el token de manera segura
+          await saveToken(token);
+          _showSuccessDialog(context, 'Correcto', 'Usuario logueado correctamente.');
 
+          // Navega a la pantalla principal
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => EscapeRoomScreen()),
+          );
+        } else {
+          _showDialog(context, 'Error', 'No se recibió un token válido.');
+        }
       } else if (response.statusCode == 401) {
         // Credenciales incorrectas
         _showDialog(context, 'Error', 'Credenciales incorrectas. Inténtalo de nuevo.');
@@ -61,16 +68,21 @@ class LoginController {
     return await http.post(url, headers: headers, body: body);
   }
 
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+  }
+
   bool isValidEmail(String email) {
     final regex = RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$');
     return regex.hasMatch(email);
   }
 
-  void _showDialog(BuildContext context,String tittle, String message) {
+  void _showDialog(BuildContext context, String title, String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(tittle, style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold)),
+        title: Text(title, style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold)),
         content: Text(message),
         actions: [
           TextButton(
@@ -81,11 +93,12 @@ class LoginController {
       ),
     );
   }
-  void _showSuccessDialog(BuildContext context,String tittle, String message) {
+
+  void _showSuccessDialog(BuildContext context, String title, String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(tittle, style: TextStyle(color: Color(0xFFA2F1A5), fontWeight: FontWeight.bold)),
+        title: Text(title, style: TextStyle(color: Color(0xFFA2F1A5), fontWeight: FontWeight.bold)),
         content: Text(message),
         actions: [
           TextButton(
