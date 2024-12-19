@@ -12,19 +12,15 @@ class EscapeRoomListItem{
   );
 
   factory EscapeRoomListItem.fromJson(Map<String, dynamic> json){
-    return switch (json) {
-      {
-        'id': int id,
-        'title': String title,
-        'location': Map<String, dynamic> location
-      } =>
-        EscapeRoomListItem(
-          id,
-          title,
-          Location.fromJson(location)
-        ),
-      _ => throw const FormatException('Failed to load escape room list item.'),
-      };
+    try {
+      return EscapeRoomListItem(
+        json['id'] as int,
+        json['title'] as String,
+        Location.fromJson(json['location'] as Map<String, dynamic>),
+      );
+    } catch (e) {
+      throw const FormatException('Failed to load escape room list item.');
+    }
   }
 
   int get id => this._id;

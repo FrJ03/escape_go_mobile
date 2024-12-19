@@ -1,6 +1,6 @@
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room.dart';
 import 'package:http/http.dart' as http;
-import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list.dart';
+import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 import 'dart:convert';
 
 
@@ -23,7 +23,7 @@ class EscapeRoomController{
       }
     };
     
-    final response = await http.post(Uri.parse('http://localhost:3000/escaperoom/create'), body: body);
+    final response = await http.post(Uri.parse('http://192.168.18.72:3000/escaperoom/create'), body: body);
 
     if(response.statusCode == 200){
       return true;
@@ -33,7 +33,7 @@ class EscapeRoomController{
     }
   }
   Future<bool> deleteEscapeRoom(int id) async {
-    final response = await http.delete(Uri.parse('http://localhost:3000/escaperoom/admin/create?id=$id'));
+    final response = await http.delete(Uri.parse('http://192.168.18.72:3000/escaperoom/admin/create?id=$id'));
 
     if(response.statusCode == 200){
       return true;
@@ -43,15 +43,15 @@ class EscapeRoomController{
     }
   }
 
-  Future<List<EscapeRoomList>> getEscapeRooms() async {
+  Future<List<EscapeRoomListItem>> getEscapeRooms() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.0.15:3000/escaperoom/admin'));
+      final response = await http.get(Uri.parse('http://192.168.18.72:3000/escaperoom/admin'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
 
         // Mapea la respuesta a objetos de tipo EscapeRoomListItem
-        return data.map((json) => EscapeRoomList.fromJson(json)).toList();
+        return data.map((json) => EscapeRoomListItem.fromJson(json)).toList();
       } else {
         throw Exception('Error al obtener escape rooms: ${response.statusCode}');
       }

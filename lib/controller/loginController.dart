@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:escape_go_mobile/view/escaperoomview.dart';
+import 'package:escape_go_mobile/view/escaperoomsview.dart';
 
 class LoginController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  final String baseUrl = 'http://192.168.0.15:3000'; // ¡Cambiar direccion IP!
+  final String baseUrl = 'http://192.168.18.72:3000'; // ¡Cambiar direccion IP!
 
   Future<void> login(BuildContext context) async {
     String email = nameController.text;
@@ -38,7 +38,7 @@ class LoginController {
           // Navega a la pantalla principal
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => EscapeRoomScreen()),
+            MaterialPageRoute(builder: (context) => EscapeRoomsScreen()),
           );
         } else {
           _showDialog(context, 'Error', 'No se recibió un token válido.');

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import'../controller/admin/escape_room_controller.dart';
-import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list.dart';
+import'../controller/participant/escape_rooms_controller.dart';
+import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -12,8 +13,9 @@ void main() {
 }
 
 class EscapeRoomsScreen extends StatelessWidget {
-  final EscapeRoomController _controller = EscapeRoomController();
-
+  final EscapeRoomsController _controllerP = EscapeRoomsController();
+  final EscapeRoomController _controllerA = EscapeRoomController();
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +27,8 @@ class EscapeRoomsScreen extends StatelessWidget {
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<EscapeRoomList>>(
-        future: _controller.getEscapeRooms(),
+      body: FutureBuilder<List<EscapeRoomListItem>>(
+        future: _controllerP.getEscapeRooms(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator()); // Indicador de carga
@@ -63,7 +65,7 @@ class EscapeRoomsScreen extends StatelessWidget {
 }
 
 class EscapeRoomRow extends StatelessWidget {
-  final EscapeRoomList escapeRoom;
+  final EscapeRoomListItem escapeRoom;
 
   const EscapeRoomRow({required this.escapeRoom});
 
