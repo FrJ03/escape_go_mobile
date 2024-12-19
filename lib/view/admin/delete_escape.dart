@@ -112,8 +112,7 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
                 try {
                   // Llama al controlador para eliminar el seleccionado
                   final selectedId = selectedRowIndex!;
-                  await controller.deleteEscapeRooms([selectedId]);
-
+                  await controller.deleteEscapeRoom([selectedId]);
                   // Actualiza el estado para eliminar visualmente
                   setState(() {
                     escapeRooms.removeAt(selectedRowIndex!);
