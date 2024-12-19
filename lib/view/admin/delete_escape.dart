@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
 import '../../controller/participant/escape_room_data.dart';
-import '../../controller/admin/deleteEscController.dart';
+import '../../controller/admin/escape_room_controller.dart';
 
 class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
   final EscapeRoomController controller = EscapeRoomController();
