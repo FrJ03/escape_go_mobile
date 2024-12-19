@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import'../controller/admin/escape_room_controller.dart';
-import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
+import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -25,7 +25,7 @@ class EscapeRoomsScreen extends StatelessWidget {
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<EscapeRoomListItem>>(
+      body: FutureBuilder<List<EscapeRoomList>>(
         future: _controller.getEscapeRooms(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -63,7 +63,7 @@ class EscapeRoomsScreen extends StatelessWidget {
 }
 
 class EscapeRoomRow extends StatelessWidget {
-  final EscapeRoomListItem escapeRoom;
+  final EscapeRoomList escapeRoom;
 
   const EscapeRoomRow({required this.escapeRoom});
 

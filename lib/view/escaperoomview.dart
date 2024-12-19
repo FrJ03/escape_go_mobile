@@ -6,11 +6,9 @@ class EscapeRoomScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-	    // se piden los datos que se van a almacenar en future
-      future: controller.fetchEscapeRoomDetails(),
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: controller.fetchEscapeRoomsByProximity(""), // Coordenadas de ejemplo
       builder: (context, snapshot) {
-	      // si está tardando en cargar
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
@@ -20,81 +18,77 @@ class EscapeRoomScreen extends StatelessWidget {
             ),
             body: Center(child: CircularProgressIndicator()),
           );
-		// si hay un error
-        } else if (snapshot.hasData) {
-          final data = snapshot.data!;
+        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          final escapeRooms = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                data['title'], // Usa el título del escape room desde los datos obtenidos
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-              ),
+              title: Text('Escape Rooms Cercanos'),
               backgroundColor: Color(0xFFA2DAF1),
               centerTitle: true,
             ),
-            body: _buildEscapeRoomDetails(data), // Construye el body con los demás datos
+            body: ListView.builder(
+              itemCount: escapeRooms.length,
+              itemBuilder: (context, index) {
+                final room = escapeRooms[index];
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  child: ListTile(
+                    title: Text(
+                      room['title'],
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      'Ubicación: ${room['location']['city']}, ${room['location']['country']}\n'
+                          'Calle: ${room['location']['street']} ${room['location']['street_number']}',
+                    ),
+                    onTap: () {
+                      _showEscapeRoomDetails(context, room);
+                    },
+                  ),
+                );
+              },
+            ),
           );
         } else {
-		// si no se han podido obtener los datos
           return Scaffold(
             appBar: AppBar(
-              title: Text('Error'),
+              title: Text('Escape Rooms'),
               backgroundColor: Color(0xFFA2DAF1),
               centerTitle: true,
             ),
-            body: Center(child: Text('Hubo un error desconocido al obtener los datos del Escape Room')),
+            body: Center(
+              child: Text('No se encontraron Escape Rooms cercanos.'),
+            ),
           );
         }
       },
     );
   }
 
-  Widget _buildEscapeRoomDetails(Map<String, dynamic> data) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(child: Image.asset(data['imagePath'], height: 150)),
-          SizedBox(height: 30),
-          Center(child: buildDetail(data['description'])),
-          SizedBox(height: 30),
-          Center(child: buildDetail('Objetivo: ${data['objective']}')),
-          SizedBox(height: 30),
-          Center(child: buildDetail('Nivel de dificultad: ${data['difficulty']}')),
-          SizedBox(height: 30),
-          Center(child: buildDetail('Advertencias: ${data['warnings']}')),
-          SizedBox(height: 30),
-          Center(child: buildDetail('Premio: ${data['price']}')),
-          SizedBox(height: 30),
-          Center(child: buildDetail('Límite de tiempo: ${data['timeLimit']}')),
-          SizedBox(height: 50),
-          Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFA2F1A5),
-              ),
-              onPressed: () {
-                print('Inscribiéndose al escape room...');
-              },
-              child: Text('Inscribirse'),
-            ),
+  void _showEscapeRoomDetails(BuildContext context, Map<String, dynamic> room) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(room['title']),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('País: ${room['location']['country']}'),
+              Text('Ciudad: ${room['location']['city']}'),
+              Text('Calle: ${room['location']['street']} ${room['location']['street_number']}'),
+              Text('Coordenadas: ${room['location']['coordinates']}'),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildDetail(String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          title,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-        ),
-      ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cerrar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
