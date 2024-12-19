@@ -3,14 +3,9 @@ import '../widgets/widgets.dart';
 import '../../controller/participant/escape_room_data.dart';
 import '../../controller/admin/deleteEscController.dart';
 
-class DeleteEscapeRoomsScreen extends StatefulWidget {
-  @override
-  _DeleteEscapeRoomsScreenState createState() => _DeleteEscapeRoomsScreenState();
-}
-
 class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
   final EscapeRoomController controller = EscapeRoomController();
-  final Set<int> selectedRows = {};
+  int? selectedRowIndex; // Cambiado a un solo índice
   List<Map<String, String>> escapeRooms = [];
   bool isLoading = true; // Indica si estamos cargando datos
   String? errorMessage;
@@ -22,7 +17,6 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
   }
 
   Future<void> _fetchEscapeRooms() async {
-    // intenta tomar los datos de los escape rooms
     try {
       final rooms = await controller.fetchEscapeRoomDetails();
       setState(() {
@@ -48,7 +42,6 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),
-      // se pone un simbolo de carga para simular que esta cargando los datos
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : errorMessage != null
@@ -60,14 +53,15 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
                         itemCount: escapeRooms.length,
                         itemBuilder: (context, index) {
                           final room = escapeRooms[index];
-                          final isSelected = selectedRows.contains(index);
+                          final isSelected = selectedRowIndex == index;
                           return GestureDetector(
                             onTap: () {
                               setState(() {
+                                // Alterna selección única
                                 if (isSelected) {
-                                  selectedRows.remove(index);
+                                  selectedRowIndex = null; // Deselecciona
                                 } else {
-                                  selectedRows.add(index);
+                                  selectedRowIndex = index; // Selecciona
                                 }
                               });
                             },
@@ -85,11 +79,11 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
                     Center(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: selectedRows.isNotEmpty
+                          backgroundColor: selectedRowIndex != null
                               ? Color(0xFFFFA1A1)
                               : Colors.grey,
                         ),
-                        onPressed: selectedRows.isNotEmpty
+                        onPressed: selectedRowIndex != null
                             ? () => _showDeleteDialog(context)
                             : null,
                         child: Text('Eliminar'),
@@ -110,96 +104,40 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
           style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold),
         ),
         content: Text(
-            'Vas a eliminar el Escape Room(s) seleccionado(s). ¿Estás seguro?'),
+            'Vas a eliminar el Escape Room seleccionado. ¿Estás seguro?'),
         actions: [
           TextButton(
             onPressed: () async {
-              FocusScope.of(context).unfocus();
-              Navigator.pop(context);
-              try {
-                // Obtiene IDS de seleccionados
-                List<int> selectedIds = selectedRows.toList();
-                // Llama al controlador para eliminar los seleccionados
-                await controller.deleteEscapeRooms(selectedIds);
-                // Actualiza el estado para eliminar visualmente
-                setState(() {
-                  escapeRooms.removeWhere((_, index) => selectedRows.contains(index));
-                  selectedRows.clear();
-                });
-                // ÉXITO
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Escape Rooms eliminados con éxito')),
-                );
-              } catch (e) {
-                // SI HUBO UN ERROR
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Hubo un error desconocido')),
-                );
+              if (selectedRowIndex != null) {
+                try {
+                  // Llama al controlador para eliminar el seleccionado
+                  final selectedId = selectedRowIndex!;
+                  await controller.deleteEscapeRooms([selectedId]);
+
+                  // Actualiza el estado para eliminar visualmente
+                  setState(() {
+                    escapeRooms.removeAt(selectedRowIndex!);
+                    selectedRowIndex = null;
+                  });
+
+                  // ÉXITO
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Escape Room eliminado con éxito')),
+                  );
+                } catch (e) {
+                  // SI HUBO UN ERROR
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Hubo un error desconocido')),
+                  );
+                }
               }
-              setState(() {
-                selectedRows.clear();
-              });
+              Navigator.pop(context);
             },
             child: Text('Eliminar', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Row1 extends StatelessWidget {
-  final String title;
-  final String description;
-  final String imagePath;
-  final bool isSelected;
-
-  Row1({
-    required this.title,
-    required this.description,
-    required this.imagePath,
-    required this.isSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 5.0),
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.blue.withOpacity(0.2) : Colors.white,
-        border: Border.all(
-          color: isSelected ? Colors.blue : Colors.grey,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Image.asset(imagePath, height: 70),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  description,
-                  textAlign: TextAlign.left,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
-              ],
-            ),
           ),
         ],
       ),
