@@ -1,6 +1,6 @@
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room.dart';
 import 'package:http/http.dart' as http;
-import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
+import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list.dart';
 import 'dart:convert';
 
 
@@ -43,7 +43,7 @@ class EscapeRoomController{
     }
   }
 
-  Future<List<EscapeRoomListItem>> getEscapeRooms() async {
+  Future<List<EscapeRoomList>> getEscapeRooms() async {
     try {
       final response = await http.get(Uri.parse('http://192.168.0.15:3000/escaperoom/admin'));
 
@@ -51,7 +51,7 @@ class EscapeRoomController{
         final List<dynamic> data = jsonDecode(response.body);
 
         // Mapea la respuesta a objetos de tipo EscapeRoomListItem
-        return data.map((json) => EscapeRoomListItem.fromJson(json)).toList();
+        return data.map((json) => EscapeRoomList.fromJson(json)).toList();
       } else {
         throw Exception('Error al obtener escape rooms: ${response.statusCode}');
       }

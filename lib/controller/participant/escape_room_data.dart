@@ -1,46 +1,54 @@
-import 'package:flutter/material.dart';
-
-class EscapeRoomController {
-  // SIMULACION DE SOLICITAR DATOS A LA API
-  Future<Map<String, dynamic>> fetchEscapeRoomDetails() async {
-    // SIMULA UN RETRASO PARA DAR TIEMPO
-    await Future.delayed(Duration(seconds: 2));
-
-    // SIMULACION DE DATOS OBTENIDOS DEL BACKEND, DUMMY TEXT
-    return [
-      {
-        'id': 1,
-        'title': 'Escapa de la mansión',
-        'description': 'Descripción del Escape Room 1 muy larga para ver como funciona lo de cortar las descripciones largas porque si el texto es muy largo llena mucho la pantalla asi que se deja como maximo que la descripcion ocupe 3 lineas asi que a ver si recorta esta descripcion y como se ve',
-        'imagePath': 'lib/view/assets/logo.png',
-      },
-      {
-        'id': 2,
-        'title': 'Escape Room 2',
-        'description': 'Descripción del Escape Room 2 más cortita',
-        'imagePath': 'lib/view/assets/logo.png',
-      },
-    ];
-  }
-}
-
-
-/**
-EJEMPLO DE LLAMADA A LA API USANDO UNA URL, BORRAR CUANDO SE AÑADA LA LLAMADA REAL
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EscapeRoomController {
-  Future<Map<String, dynamic>> fetchEscapeRoomDetails() async {
-    final response = await http.get(Uri.parse('https://api.example.com/escape-room/1'));
+  final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Error al cargar los datos');
+  /// Fetch escape rooms by proximity
+  Future<List<Map<String, dynamic>>> fetchEscapeRoomsByProximity(
+      String coordinates) async {
+    coordinates='0º 30\'30\" N, 0º 30\'30\" N';
+    try {
+      final token = await _getToken(); // Recupera el token almacenado
+      if (token == null) {
+        throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+      }
+
+      final url =
+      Uri.parse('$baseUrl/escaperoom/participant/proximity'); // Ruta completa
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': '$token', // Token para autenticación
+      };
+      final body = jsonEncode({
+        'coordinates': coordinates, // Enviar coordenadas en el cuerpo
+
+      });
+
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data is Map<String, dynamic> && data['escape_rooms'] is List) {
+          return List<Map<String, dynamic>>.from(data['escape_rooms']); // Extrae escape_rooms
+        } else {
+          throw Exception('Respuesta inválida del servidor.');
+        }
+      } else {
+        throw Exception(
+            'Error al obtener los Escape Rooms por cercanía: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error en la conexión: $e');
     }
+  }
+
+  /// Obtener el token almacenado
+  Future<String?> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
   }
 }
 
-**/
+
