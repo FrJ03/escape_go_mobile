@@ -2,9 +2,11 @@ import 'package:escape_go_mobile/domain/escape_rooms/escape_room.dart';
 import 'package:http/http.dart' as http;
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class EscapeRoomController{
+  final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
   Future<bool> createEscapeRoom(EscapeRoom escapeRoom) async {
     final Object body = {
       'title': escapeRoom.title,
@@ -45,20 +47,38 @@ class EscapeRoomController{
 
   Future<List<EscapeRoomListItem>> getEscapeRooms() async {
     try {
-      final response = await http.get(Uri.parse('http://192.168.18.72:3000/escaperoom/admin'));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-
-        // Mapea la respuesta a objetos de tipo EscapeRoomListItem
-        return data.map((json) => EscapeRoomListItem.fromJson(json)).toList();
-      } else {
-        throw Exception('Error al obtener escape rooms: ${response.statusCode}');
+      final token = await _getToken(); // Recupera el token almacenado
+      if (token == null) {
+        throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
       }
+
+      final url = Uri.parse('$baseUrl/escaperoom/admin/'); // Ruta completa
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token, // Token para autenticación
+      };
+      final body = jsonEncode({
+      });
+
+      final response = await http.post(url, headers: headers, body: body); //Se está mandando el request y esperando el response
+
+        final json = jsonDecode(response.body);
+        List<EscapeRoomListItem> list = [];
+
+        for (final escapeRoom in json['escape_rooms']) {
+          list.add(EscapeRoomListItem.fromJson(escapeRoom as Map<String, dynamic>));
+        }
+
+        return list;
+
     } catch (e) {
       throw Exception('Error de conexión: $e');
     }
   }
 
-
+  /// Obtener el token almacenado
+  Future<String?> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
+  }
 }
