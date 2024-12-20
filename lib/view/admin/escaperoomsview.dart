@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import'../../controller/admin/escape_room_controller.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
+import '../widgets/widgets.dart';
+import'modify_escape.dart';
 //Vista para listar todos los Escape Rooms por distancia en el participante
 
 void main() {
@@ -42,7 +44,7 @@ class EscapeRoomScreen extends StatelessWidget {
           } else if (!snapshot.hasData) {
             return Center(
               child: Text(
-                'No se encontraron escape rooms cerca.',
+                'No se encontraron escape rooms.',
                 style: TextStyle(fontSize: 18),
               ),
             );
@@ -88,7 +90,6 @@ class EscapeRoomRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset('lib/view/assets/logo.png', height: 70),
           SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -99,6 +100,26 @@ class EscapeRoomRow extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ModifyEscapeScreen(id: escapeRoom.id.toString())),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        // Acción para borrar
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

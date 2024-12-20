@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../view/admin/panel_admin.dart';
-
+//Voy a probar un mismo controlador para las dos vistas
 class ModifyEscapeController {
 
 
@@ -10,6 +10,7 @@ class ModifyEscapeController {
   final TextEditingController solutionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   List<Map<String, dynamic>> infoEscape = [];
+
 
   //Simulamos que estos son los datos que hemos cogido al llamar al backend
   //Hay que pasarle el id por url
@@ -22,26 +23,24 @@ class ModifyEscapeController {
 
 
   Future<void> recoger(BuildContext context) async {
-
-
-        tittle= tittleController.toString();
-        description=descriptionController.toString();
-        solution=solutionController.toString();
-        level=levelController.toString();
-        price=priceController.toString();
+    tittle = tittleController.toString();
+    description = descriptionController.toString();
+    solution = solutionController.toString();
+    level = levelController.toString();
+    price = priceController.toString();
 
     //Esto es solo para ver si se modifica bien en el frontend
-      _showDialog(context, 'Información del Escape', infoEscape.toString());
-      tittleController.clear();
-      descriptionController.clear();
-      solutionController.clear();
-      levelController.clear();
-      priceController.clear();
-      infoEscape.clear();
-      //Falta la otra página de modificar
-      //Navigator.push(context, route)
+    _showDialog(context, 'Información del Escape', infoEscape.toString());
+    tittleController.clear();
+    descriptionController.clear();
+    solutionController.clear();
+    levelController.clear();
+    priceController.clear();
+    infoEscape.clear();
+    //Falta la otra página de modificar
+    //Navigator.push(context, route)
 
-    }
+  }
 
   void confirmCancel(BuildContext context) {
     _showDialog(
@@ -53,9 +52,9 @@ class ModifyEscapeController {
       },
     );
   }
-  }
 
 
+}
 
   void _showDialog(
       BuildContext context,
@@ -86,6 +85,8 @@ class ModifyEscapeController {
       ),
     );
   }
+
+
 
 
 

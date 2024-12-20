@@ -4,7 +4,7 @@ import '../../controller/admin/modifyEscController.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: ModifyEscapeScreen(),
+    home: ModifyEscapeScreen(id: ''),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),
@@ -12,7 +12,10 @@ void main() {
 }
 
 class ModifyEscapeScreen extends StatelessWidget {
+  final String id;
   final ModifyEscapeController controller = ModifyEscapeController();
+
+  ModifyEscapeScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +38,7 @@ class ModifyEscapeScreen extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
+                    Text(id),
                     SizedBox(height: 16),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
