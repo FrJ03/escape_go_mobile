@@ -54,13 +54,11 @@ class EscapeRoomController{
 
       final url = Uri.parse('$baseUrl/escaperoom/admin/'); // Ruta completa
       final headers = {
-        'Content-Type': 'application/json',
         'Authorization': token, // Token para autenticación
       };
-      final body = jsonEncode({
-      });
 
-      final response = await http.post(url, headers: headers, body: body); //Se está mandando el request y esperando el response
+
+      final response = await http.get(url, headers: headers); //Se está mandando el request y esperando el response
 
         final json = jsonDecode(response.body);
         List<EscapeRoomListItem> list = [];
