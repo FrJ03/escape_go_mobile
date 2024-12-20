@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import'../../controller/admin/escape_room_controller.dart';
+import'../../controller/admin/deleteEscController.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 import '../widgets/widgets.dart';
 import'modify_escape.dart';
@@ -16,7 +17,7 @@ void main() {
 
 class EscapeRoomScreen extends StatelessWidget {
   final EscapeRoomController _controllerA = EscapeRoomController();
-
+  final DeleteEscapeRoomController _deleteController = DeleteEscapeRoomController();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +58,10 @@ class EscapeRoomScreen extends StatelessWidget {
             itemCount: escapeRooms.length,
             itemBuilder: (context, index) {
               final escapeRoom = escapeRooms[index];
-              return EscapeRoomRow(escapeRoom: escapeRoom);
+              return EscapeRoomRow(
+              escapeRoom: escapeRoom,
+              deleteController: _deleteController,
+              );
             },
           );
         },
@@ -68,8 +72,12 @@ class EscapeRoomScreen extends StatelessWidget {
 
 class EscapeRoomRow extends StatelessWidget {
   final EscapeRoomListItem escapeRoom;
+  final DeleteEscapeRoomController deleteController;
 
-  const EscapeRoomRow({required this.escapeRoom});
+  const EscapeRoomRow({
+    required this.escapeRoom,
+    required this.deleteController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -115,12 +123,37 @@ class EscapeRoomRow extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
-                        // Acción para borrar
+                        _confirmDelete(context, escapeRoom.id); //FALLO escapeRoom.id siempre manda 1 
                       },
                     ),
                   ],
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  void _confirmDelete(BuildContext context, int escapeRoomId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirmar eliminación'),
+        content: Text('¿Estás seguro de que deseas eliminar este Escape Room?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              deleteController.deleteEscapeRoom(context, escapeRoomId);
+            },
+            child: Text(
+              'Eliminar',
+              style: TextStyle(color: Colors.red),
             ),
           ),
         ],
