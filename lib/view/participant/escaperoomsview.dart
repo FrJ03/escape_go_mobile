@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import'../controller/admin/escape_room_controller.dart';
-import'../controller/participant/escape_rooms_controller.dart';
+import'../../controller/participant/escape_rooms_controller.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
+//Vista para listar todos los Escape Rooms por distancia en el participante
 
 void main() {
   runApp(MaterialApp(
@@ -14,7 +14,7 @@ void main() {
 
 class EscapeRoomsScreen extends StatelessWidget {
   final EscapeRoomsController _controllerP = EscapeRoomsController();
-  final EscapeRoomController _controllerA = EscapeRoomController();
+
   
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class EscapeRoomsScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.red),
               ),
             );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData) {
             return Center(
               child: Text(
                 'No se encontraron escape rooms cerca.',

@@ -4,19 +4,30 @@ import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart'
 import 'package:escape_go_mobile/domain/escape_rooms/participation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:shared_preferences/shared_preferences.dart';
 class EscapeRoomsController{
+  final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
+
   Future<List<EscapeRoomListItem>> getEscapeRooms() async {
-    Position position = await _getLocation();
+    try {
+      Position position = await _getLocation();
+      String coordinates = _positionToString(position);
+      final token = await _getToken(); // Recupera el token almacenado
+      if (token == null) {
+        throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+      }
 
-    String coordinates = _positionToString(position);
+      final url = Uri.parse('$baseUrl/escaperoom/participant/proximity'); // Ruta completa
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token, // Token para autenticación
+      };
+      final body = jsonEncode({
+        'coordinates': coordinates, // Enviar coordenadas en el cuerpo
 
-    Object body = {
-      coordinates: coordinates
-    };
+      });
 
-    http.Response response = await http.post(Uri.parse('http://localhost:3000/escaperoom/proximity'), body: body);
-
+      final response = await http.post(url, headers: headers, body: body); //Se está mandando el request y esperando el response
     if(response.statusCode == 200){
       final json = jsonDecode(response.body);
       List<EscapeRoomListItem> list = [];
@@ -27,15 +38,24 @@ class EscapeRoomsController{
 
       return list;
     }
-    else if(response.statusCode == 400 || response.statusCode == 500){
+    else if(response.statusCode == 400 || response.statusCode == 500){ //Error 400 es error por coordenadas
       return Future.error('Error<${response.statusCode}>: get escape rooms by distance');
     }
     else{
       return Future.error('Error<unknown>: get escape rooms by distance');
     }
   }
+    catch (e) {
+      throw Exception('Error en la conexión: $e');
+    }
+  }
+
+
+
+
+
   Future<(EscapeRoom, List<Participation>)> getEscapeRoom(int id) async {
-    http.Response response = await http.get(Uri.parse('http://localhost:3000/escaperoom/info?id=$id'));
+    http.Response response = await http.get(Uri.parse('http://192.168.0.15:3000/escaperoom/info?id=$id'));
 
     if(response.statusCode == 200){
       final escapeRoom = EscapeRoom.fromJson(jsonDecode(response.body).escape_room as Map<String, dynamic>);
@@ -99,5 +119,10 @@ class EscapeRoomsController{
     }
 
     return await Geolocator.getCurrentPosition();
+  }
+  /// Obtener el token almacenado
+  Future<String?> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
   }
 }
