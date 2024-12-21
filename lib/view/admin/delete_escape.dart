@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
-import '../../controller/participant/escape_room_data.dart';
 import '../../controller/admin/escape_room_controller.dart';
 
 class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
@@ -18,7 +17,7 @@ class _DeleteEscapeRoomsScreenState extends State<DeleteEscapeRoomsScreen> {
 
   Future<void> _fetchEscapeRooms() async {
     try {
-      final rooms = await controller.fetchEscapeRoomDetails();
+      final rooms = await controller.getEscapeRooms();
       setState(() {
         escapeRooms = rooms;
         isLoading = false;
