@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
+import 'participate_escape.dart';
+import 'found_clues.dart';
 //import '../../controller/participant/participe_escape_controller.dart';
+// ACTUALIZAR CONTROLLER DE JUEGO
 
 void main() {
   runApp(MaterialApp(
@@ -92,7 +95,9 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 		    value: 'PISTAS',
 		    color: Color(0xFFA2DAF1),
 		    onPressed: () {
-		      // ENVIAR A LA VISTA DE PISTAS
+		      Navigator.push(context, MaterialPageRoute(
+		        builder: (context) => CluesScreen()),
+		      );
 		    }
 		  ),
 		  CustomButton(
@@ -126,8 +131,12 @@ void _showExitDialog(
         content: Text('¿Salir del Escape Room?'),
         actions: [
           TextButton(
-	     // SALIR DEL ESCAPE ROOM
-             //onPressed: () => Navigator.pop(context),
+	     // SALIR DEL ESCAPE ROOM, SE TIENE QUE BORRAR ALGO ??
+             onPressed: () {
+		Navigator.push(context, MaterialPageRoute(
+		  builder: (context) => ParticipateEscapeScreen()),
+		);
+	     },
              child: Text('SÍ', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           TextButton(
