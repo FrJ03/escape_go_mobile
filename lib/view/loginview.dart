@@ -1,8 +1,8 @@
-import 'package:escape_go_mobile/view/profileview.dart';
 import 'package:flutter/material.dart';
 import 'widgets/widgets.dart';
 import 'registerview.dart';
 import '../controller/loginController.dart';
+
 void main() {
   runApp(MaterialApp(
     home: LoginScreen(),
@@ -113,15 +113,7 @@ class LoginScreen extends StatelessWidget {
                         );
                         },
                     ),
-                    InkWell(child:
-                    Text('mi perfil',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,decoration: TextDecoration.underline)),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
-                      );
-                    },
-                  )
+
 
                   ],
                 )

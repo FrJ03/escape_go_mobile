@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:escape_go_mobile/view/participant/escaperoomsview.dart';
 import 'package:escape_go_mobile/view/admin/escaperoomsview.dart';
+import 'package:escape_go_mobile/view/admin/statistics.dart';
+import 'package:escape_go_mobile/view/admin/panel_admin.dart';
 
 
 class LoginController {
@@ -46,7 +48,7 @@ class LoginController {
           else if(role=='admin'){
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => EscapeRoomScreen()),
+              MaterialPageRoute(builder: (context) => PanelScreen()),
             );}
 
         } else {
