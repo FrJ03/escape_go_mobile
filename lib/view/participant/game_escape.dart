@@ -66,13 +66,49 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
         	    ),
 		    SizedBox(height: 16),
 		    CustomButton(
-		      key: Key('obtener_pista_button'),
-		      value: 'OBTÉN UNA PISTA',
-		      color: Color(0xFFA2DAF1),
-		      onPressed: () {
-		        // SACA UN POP-UP CON LA SIGUIENTE PISTA
-		      }
-		    ),
+			  key: Key('obtener_pista_button'),
+			  value: 'OBTÉN UNA PISTA',
+			  color: Color(0xFFA2DAF1),
+			  onPressed: () async {
+			    try {
+			      // LISTA DE IDS
+			      List<int> cluesIds = []; // CARGA LOS IDS DE LAS PISTAS YA ENCONTRADAS
+			      int escapeRoomId = 1; // SUPONEMOS QUE ES EL ID DEL ESCAPE ROOM ACTUAL
+			      // Llama al backend con getNextClue
+			      Clue nextClue = await controller.getNextClue(cluesIds, escapeRoomId);
+			      // Muestra el pop-up con la pista
+			      showDialog(
+			        context: context,
+			        builder: (BuildContext context) {
+			          return AlertDialog(
+			            title: Text('Pista: ${nextClue.title}'),
+			            content: Text(nextClue.info),
+			            actions: [
+			              TextButton(
+			                onPressed: () {
+			                  Navigator.of(context).pop();
+			                },
+			                child: Text('Cerrar'),
+			              ),
+			            ],
+			          );
+			        },
+			      );
+			    } catch (e) {
+			      // Si hay un error
+			      showDialog(
+			        context: context,
+			        builder: (BuildContext context) {
+			          return AlertDialog(
+			            title: Text('Error'),
+			            content: Text(e.toString()),
+			            actions: [ TextButton( onPressed: () { Navigator.of(context).pop(); }, child: Text('Cerrar'), ), ],
+			          );
+			        },
+			      );
+			    } // Fin del error
+			  }, // Fin de onPressed
+		     ),
                   ],
                 ),
               ),
