@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// import'../../controller/participant/escape_rooms_controller.dart';
-// ACTUALIZAR CON CONTROLADOR AL QUE PEDIR LAS PISTAS YA ENCONTRADAS
+import'../../controller/participant/game_controller.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -12,7 +11,8 @@ void main() {
 }
 
 class CluesScreen extends StatelessWidget {
-  final CluesController _controllerC = CluesController();
+	// _controllerC for clues
+  final GameController _controllerC = GameController();
 
   
   @override
