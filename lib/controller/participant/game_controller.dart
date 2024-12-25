@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class GameController{
   Future<bool> register(String userEmail, int participationId, int escapeRoomId) async {
@@ -16,5 +17,54 @@ class GameController{
     else{
       return false;
     }
+  }
+
+// pide la siguiente pista del escape room
+  Future<Clue> getNextClue(List<int> cluesIds, int escapeRoomId) async {
+    try {
+      // Obtener el token del usuario autenticado
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+      }
+      // URL del endpoint
+      final url = Uri.parse('http://localhost:3000/game/clue');
+      // Cuerpo de la solicitud
+      final Object body = {
+        'clues_ids': cluesIds,
+        'escape_room_id': escapeRoomId,
+      };
+      // Encabezados para la autenticación y el contenido
+      final headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      };
+      // Realizar la solicitud POST y convertir a JSON
+      final response = await http.post(url,headers: headers,body: jsonEncode(body),
+      );
+
+      switch (response.statusCode) {
+        case 200:
+          // Decodifica el cuerpo de la respuesta porque la solicitud ha sido correcta
+          final json = jsonDecode(response.body);
+          return Clue.fromJson(json['clue'] as Map<String, dynamic>);
+        case 400:
+          throw Exception('Error en solicitud: ${response.body}');
+        case 401:
+          throw Exception('No eres admin.');
+        case 404:
+          throw Exception('Escape Room no existe.');
+        default:
+          throw Exception('Error inesperado: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Hubo un error de conexión: $e');
+    }
+  }
+
+  /// Obtener el token almacenado
+  Future<String?> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
   }
 }
