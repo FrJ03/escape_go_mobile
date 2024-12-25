@@ -159,7 +159,11 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 		    color: Color(0xFFA2DAF1),
 		    onPressed: () {
 		      Navigator.push(context, MaterialPageRoute(
-		        builder: (context) => CluesScreen(cluesIds: cluesIds)),
+		        builder: (context) => CluesScreen(
+          		  cluesIds: cluesIds, // lista de cluesIds
+          		  escapeRoomId: escapeRoomId, // escapeRoomId
+        		),
+		      ),
 		      );
 		    }
 		  ),
