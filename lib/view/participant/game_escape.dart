@@ -21,6 +21,8 @@ class GameEscapeScreen extends StatefulWidget {
 
 class _GameEscapeScreenState extends State<GameEscapeScreen> {
   final GameEscController controller = GameController();
+  List<int> cluesIds = []; // Lista para almacenar los IDs de las pistas encontradas
+  int escapeRoomId = 1; // SUPONEMOS QUE EL ID DEL ESCAPE ROOM ES 1
   //DateTime? selectedSession;
 
   @override
@@ -76,6 +78,10 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 			      int escapeRoomId = 1; // SUPONEMOS QUE ES EL ID DEL ESCAPE ROOM ACTUAL
 			      // Llama al backend con getNextClue
 			      Clue nextClue = await controller.getNextClue(cluesIds, escapeRoomId);
+			      // actualiza la lista con la nueva pista
+			      setState(() {
+			        cluesIds.add(nextClue.id);
+			      });
 			      // Muestra el pop-up con la pista
 			      showDialog(
 			        context: context,
@@ -165,8 +171,12 @@ void _showExitDialog(
         content: Text('¿Salir del Escape Room?'),
         actions: [
           TextButton(
-	     // SALIR DEL ESCAPE ROOM, SE TIENE QUE BORRAR ALGO ??
+	     // SALIR DEL ESCAPE ROOM, SE TIENE QUE BORRAR ALGO MÁS ??
              onPressed: () {
+		     // vacia la lista de pistas
+		setState(() {
+    		  cluesIds.clear();
+  		});
 		Navigator.push(context, MaterialPageRoute(
 		  builder: (context) => ParticipateEscapeScreen()),
 		);
