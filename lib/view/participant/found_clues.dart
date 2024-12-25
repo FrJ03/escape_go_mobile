@@ -14,8 +14,13 @@ class CluesScreen extends StatelessWidget {
   // _controllerC for clues
   final GameController _controllerC = GameController();
   final List<int> cluesIds;  // Recibe la lista de IDs de pistas
-  // Constructor que recibe la lista de cluesIds
-  const CluesScreen({Key? key, required this.cluesIds}) : super(key: key);
+  final int escapeRoomId; // Recibe el escapeRoomId
+  // Constructor que recibe cluesIds y escapeRoomId
+  const CluesScreen({
+    Key? key,
+    required this.cluesIds,
+    required this.escapeRoomId,
+  }) : super(key: key);
 
   
   @override
@@ -39,7 +44,7 @@ class CluesScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           // Para cada clueId en cluesIds -> obtiene la pista con getClue
           return FutureBuilder<Clue>(
-            future: _controllerC.getClue(cluesIds[index], 1), // SUPONEMOS QUE 1 ES EL ESCAPE ROOM ID
+            future: _controllerC.getClue(cluesIds[index], escapeRoomId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator()); // SIMULA CARGA
