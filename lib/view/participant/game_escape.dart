@@ -22,8 +22,30 @@ class GameEscapeScreen extends StatefulWidget {
 class _GameEscapeScreenState extends State<GameEscapeScreen> {
   final GameEscController controller = GameController();
   List<int> cluesIds = []; // Lista para almacenar los IDs de las pistas encontradas
-  int escapeRoomId = 1; // SUPONEMOS QUE EL ID DEL ESCAPE ROOM ES 1
-  //DateTime? selectedSession;
+  int escapeRoomId = 1; // SUPONEMOS QUE EL ID DEL ESCAPE ROOM ES 1 ?? el usuario jugador no puede llamar a metodos que consigan el id del escape room ??
+  String currentClueText = ''; // vamos a rellenar esto con la primera pista
+
+// en cuanto se inicia la vista se pide la primera pista para comenzar el juego
+  @override
+  void initState() {
+    super.initState();
+    _initializeFirstClue();
+  }
+	
+  // OBTIENE LA PRIMERA PISTA EN CUANTO COMIENZA EL JUEGO
+  Future<void> _initializeFirstClue() async {
+    try {
+      Clue firstClue = await controller.getNextClue(cluesIds, escapeRoomId);
+      setState(() {
+        cluesIds.add(firstClue.id); // ACTUALIZA LA LISTA CON LA PRIMERA PISTA
+        currentClueText = firstClue.info; // ACTUALIZA EL TEXTO QUE MUESTRA LA PISTA ACTUAL
+      });
+    } catch (e) {
+      setState(() {
+        currentClueText = 'No se pudo obtener la  pista.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +82,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
                     SizedBox(height: 16),
 		    RoundedTextBox(
 		      // EN ESTE TEXTO SE PONE LA PISTA ACTUAL
-          	      text: 'Te despiertas en esta habitación y no recuerdas nada. Encuentra una forma de escapar de la mansión.',
+          	      text: currentClueText,
           	      borderColor: Color(0xFFA2DAF1), // Color del borde
           	      borderWidth: 4.0, // Ancho del borde
           	      padding: EdgeInsets.all(16), // Espaciado alrededor del texto
@@ -81,6 +103,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 			      // actualiza la lista con la nueva pista
 			      setState(() {
 			        cluesIds.add(nextClue.id);
+				currentClueText = nextClue.info;
 			      });
 			      // Muestra el pop-up con la pista
 			      showDialog(
