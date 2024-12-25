@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
 import 'participate_escape.dart';
 import 'found_clues.dart';
-//import '../../controller/participant/participe_escape_controller.dart';
-// ACTUALIZAR CONTROLLER DE JUEGO
+import '../../controller/participant/game_controller.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -21,9 +20,8 @@ class GameEscapeScreen extends StatefulWidget {
 }
 
 class _GameEscapeScreenState extends State<GameEscapeScreen> {
-  //final GameEscController controller = GameEscController();
+  final GameEscController controller = GameController();
   //DateTime? selectedSession;
-  // ACTUALIZAR CONTROLLER DE JUEGO
 
   @override
   Widget build(BuildContext context) {
