@@ -102,7 +102,7 @@ class pistaRow extends StatelessWidget {
                 ),
                 SizedBox(height: 5),
                 Text(
-                  pista.desc, // Muestra la descripcion de la pista ("busca un digito de 4 numeros" etc)
+                  pista.info, // Muestra la info de la pista ("busca un digito de 4 numeros" etc)
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ],
