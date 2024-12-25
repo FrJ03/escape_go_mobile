@@ -42,7 +42,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
       });
     } catch (e) {
       setState(() {
-        currentClueText = 'No se pudo obtener la  pista.';
+        currentClueText = 'No se pudo obtener la pista.';
       });
     }
   }
