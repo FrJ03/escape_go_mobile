@@ -62,9 +62,77 @@ class GameController{
     }
   }
 
+
+  // Obtiene pista específica a partir de ID
+  Future<Clue> getClue(int clueId, int escapeRoomId) async {
+    try {
+      // Obtener el token del usuario autenticado
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+      }
+      // ENDPOINT
+      final url = Uri.parse('http://localhost:3000/game/clue/$clueId');
+      // Cuerpo de la solicitud
+      final Object body = {
+        'clue_id': clueId,
+        'escape_room_id': escapeRoomId,
+      };
+      // Encabezados
+      final headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      };
+      // SOLICITUD POST
+      final response = await http.post(url,headers: headers,body: jsonEncode(body),
+      );
+      // RESPUESTAS
+      switch (response.statusCode) {
+        case 200:
+          // CORRECTO
+          final json = jsonDecode(response.body);
+          return Clue.fromJson(json['clue'] as Map<String, dynamic>);
+        case 400:
+          throw Exception('Error en solicitud: ${response.body}');
+        case 401:
+          throw Exception('No eres admin.');
+        case 404:
+          throw Exception('Escape Room no existe.');
+        default:
+          throw Exception('Hubo un error inesperado: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Hubo un error de conexión: $e');
+    }
+  }
+
   /// Obtener el token almacenado
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
+  }
+}
+
+
+
+// REPRESENTAR UNA CLUE
+class Clue {
+  final int id;
+  final String title;
+  final String info;
+
+  Clue({
+    required this.id,
+    required this.title,
+    required this.info,
+  });
+
+  // CREAR CLUE A PARTIR DE JSON
+  factory Clue.fromJson(Map<String, dynamic> json) {
+    return Clue(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      info: json['info'] as String,
+    );
   }
 }
