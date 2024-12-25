@@ -11,8 +11,11 @@ void main() {
 }
 
 class CluesScreen extends StatelessWidget {
-	// _controllerC for clues
+  // _controllerC for clues
   final GameController _controllerC = GameController();
+  final List<int> cluesIds;  // Recibe la lista de IDs de pistas
+  // Constructor que recibe la lista de cluesIds
+  const CluesScreen({Key? key, required this.cluesIds}) : super(key: key);
 
   
   @override
@@ -30,35 +33,33 @@ class CluesScreen extends StatelessWidget {
         backgroundColor: Color(0xFFFCCB50),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<ClueListItem>>(
-        future: _controllerC.getClues(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); // Indicador de carga
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(color: Colors.red),
-              ),
-            );
-          } else if (!snapshot.hasData) {
-            return Center(
-              child: Text(
-                'No se pudieron mostrar pistas encontradas.',
-                style: TextStyle(fontSize: 18),
-              ),
-            );
-          }
-
-          final pistas = snapshot.data!;
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(10.0),
-            itemCount: pistas.length,
-            itemBuilder: (context, index) {
-              final pista = pistas[index];
-              return pistaRow(pista: pista);
+      body: ListView.builder(
+        padding: const EdgeInsets.all(10.0),
+        itemCount: cluesIds.length,
+        itemBuilder: (context, index) {
+          // Para cada clueId en cluesIds -> obtiene la pista con getClue
+          return FutureBuilder<Clue>(
+            future: _controllerC.getClue(cluesIds[index], 1), // SUPONEMOS QUE 1 ES EL ESCAPE ROOM ID
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator()); // SIMULA CARGA
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                );
+              } else if (!snapshot.hasData) {
+                return Center(
+                  child: Text(
+                    'Hubo un error. No se pudieron cargar las pistas.',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                );
+              }
+              final clue = snapshot.data!; // pista obtenida
+              return pistaRow(pista: clue); // pista renderizada
             },
           );
         },
@@ -68,7 +69,7 @@ class CluesScreen extends StatelessWidget {
 }
 
 class pistaRow extends StatelessWidget {
-  final ClueListItem pista;
+  final Clue pista;
 
   const pistaRow({required this.pista});
 
