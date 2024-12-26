@@ -166,7 +166,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 		    key: Key('continue_button'),
 		    value: 'CONTINUAR',
 		    color: Color(0xFFA2F1A5),
-		    onPressed. () {
+		    onPressed: () {
 		      // CONTINUAR
 		    }
 		  ),

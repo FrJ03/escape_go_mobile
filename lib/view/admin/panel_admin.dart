@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
 import '../profileview.dart';
 import 'statistics.dart';
+import 'escaperoomsviewAdmin.dart';
 void main() {
   runApp(MaterialApp(
     home: PanelScreen(),
@@ -57,50 +58,6 @@ class PanelScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16),
-
-                  Row(
-                    children: [
-                      Image.asset(
-                        'lib/view/assets/eliminar_escape.png', // Ruta de tu imagen
-                        width: 100,
-                        height: 100,
-                      ),
-                      SizedBox(width: 10), // Espaciado entre imagen y botón
-                      Expanded(
-                        child: PanelButton(
-                            key: Key('delete_escape_button'),
-                            value: 'Eliminar un escape room',
-                            color: Color(0xFFFFA1A1),
-                            onPressed: () {
-                              print('Debe redireccionar a la página de eliminar un escape room');
-                            }
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-
-                  Row(
-                    children: [
-                      Image.asset(
-                        'lib/view/assets/modificar_escape.png', // Ruta de tu imagen
-                        width: 100,
-                        height: 100,
-                      ),
-                      SizedBox(width: 10), // Espaciado entre imagen y botón
-                      Expanded(
-                        child: PanelButton(
-                            key: Key('modify_escape_button'),
-                            value: 'Modificar un escape room',
-                            color: Color(0xFFA2DAF1),
-                            onPressed: (){
-                              print('Debe redireccionar a la página de modificar un escape room');
-                            }
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
                   Row(
                     children: [
                       Image.asset(
@@ -139,8 +96,10 @@ class PanelScreen extends StatelessWidget {
                             value: 'Escape Rooms',
                             color: Color(0xFFA2DAF1),
                             onPressed: (){
-                              print('Debe redireccionar a mis Escape Rooms');
-
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => EscapeRoomScreen()),
+                              );
                             }
                         ),
                       ),

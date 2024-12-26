@@ -4,7 +4,7 @@ import '../../controller/participant/participe_escape_controller.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: ParticipateEscapeScreen(),
+    home: ParticipateEscapeScreen(escapeRoomId: 0),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),

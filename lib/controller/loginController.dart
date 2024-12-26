@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:escape_go_mobile/view/participant/escaperoomsview.dart';
-import 'package:escape_go_mobile/view/admin/escaperoomsview.dart';
+import 'package:escape_go_mobile/view/participant/escaperoomsviewParticipant.dart';
+import 'package:escape_go_mobile/view/admin/escaperoomsviewAdmin.dart';
 import 'package:escape_go_mobile/view/admin/statistics.dart';
 import 'package:escape_go_mobile/view/admin/panel_admin.dart';
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import'../../controller/participant/escape_rooms_controller.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
+
 //Vista para listar todos los Escape Rooms por distancia en el participante
 
 void main() {
@@ -59,13 +60,7 @@ class EscapeRoomsScreen extends StatelessWidget {
               return GestureDetector(
                 // ENVÍA EL ID DEL ESCAPE ROOM A LA VISTA SIGUIENTE, NECESARIO PARA PEDIR LAS PISTAS
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ParticipateEscapeScreen(escapeRoomId: escapeRoom.id),
-                    ),
-                  );
+
                 },
                 child: EscapeRoomRow(escapeRoom: escapeRoom),
               );
