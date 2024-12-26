@@ -55,7 +55,20 @@ class EscapeRoomsScreen extends StatelessWidget {
             itemCount: escapeRooms.length,
             itemBuilder: (context, index) {
               final escapeRoom = escapeRooms[index];
-              return EscapeRoomRow(escapeRoom: escapeRoom);
+              // nota la pulsación
+              return GestureDetector(
+                // ENVÍA EL ID DEL ESCAPE ROOM A LA VISTA SIGUIENTE, NECESARIO PARA PEDIR LAS PISTAS
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ParticipateEscapeScreen(escapeRoomId: escapeRoom.id),
+                    ),
+                  );
+                },
+                child: EscapeRoomRow(escapeRoom: escapeRoom),
+              );
             },
           );
         },
