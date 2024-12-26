@@ -12,6 +12,8 @@ void main() {
 }
 
 class ParticipateEscapeScreen extends StatefulWidget {
+  final int escapeRoomId; // RECIBE EL INT DEL ESCAPE ROOM
+  const ParticipateEscapeScreen({Key? key, required this.escapeRoomId}) : super(key: key);
   @override
   _ParticipateEscapeScreenState createState() =>
       _ParticipateEscapeScreenState();
@@ -111,6 +113,15 @@ class _ParticipateEscapeScreenState extends State<ParticipateEscapeScreen> {
                     onPressed: () {
                       if (selectedSession != null) {
                         controller.participe(context);
+                        // PASAMOS EL ID DEL ESCAPE ROOM A LA VISTA DEL JUEGO CUANDO SE ACEPTA PARTICIPAR
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GameEscapeScreen(
+                              escapeRoomId: widget.escapeRoomId,
+                            ),
+                          ),
+                        );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
