@@ -8,32 +8,46 @@ import 'package:shared_preferences/shared_preferences.dart';
 class EscapeRoomController{
   final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
   Future<bool> createEscapeRoom(EscapeRoom escapeRoom) async {
-    final Object body = {
+    final token = await _getToken();
+    if (token == null) {
+      throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+    }
+
+    final body = {
       'title': escapeRoom.title,
       'description': escapeRoom.description,
       'solution': escapeRoom.solution,
       'difficulty': escapeRoom.difficulty,
       'price': escapeRoom.price,
       'maxSessionDuration': escapeRoom.maxSessionDuration,
-      'location':{
+      'location': {
         'country': escapeRoom.location.country,
         'city': escapeRoom.location.city,
         'street': escapeRoom.location.street,
         'street_number': escapeRoom.location.streetNumber,
         'coordinates': escapeRoom.location.coordinates,
-        'info': escapeRoom.location.info
+        'info': escapeRoom.location.info,
       }
     };
-    
-    final response = await http.post(Uri.parse('http://192.168.18.72:3000/escaperoom/create'), body: body);
 
-    if(response.statusCode == 200){
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    };
+
+    final response = await http.post(
+      Uri.parse('http://192.168.18.72:3000/escaperoom/create'),
+      headers: headers,
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
-      return false;
+    } else {
+      throw Exception('Error al crear el escape room: ${response.body}');
     }
   }
+
   Future<bool> deleteEscapeRoom(int id) async {
     final response = await http.delete(Uri.parse('http://192.168.18.72:3000/escaperoom/admin/create?id=$id'));
 
@@ -52,27 +66,34 @@ class EscapeRoomController{
         throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
       }
 
-      final url = Uri.parse('$baseUrl/escaperoom/admin/'); // Ruta completa
-      final headers = {
-        'Authorization': token, // Token para autenticación
-      };
+      final url = Uri.parse('$baseUrl/escaperoom/admin/');
+      final headers = {'Authorization': token};
 
-
-      final response = await http.get(url, headers: headers); //Se está mandando el request y esperando el response
-
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        print('Response body: ${response.body}');
         final json = jsonDecode(response.body);
-        List<EscapeRoomListItem> list = [];
 
+        if (json['escape_rooms'] == null) {
+          throw Exception('La respuesta no contiene escape rooms');
+        }
+
+        List<EscapeRoomListItem> list = [];
         for (final escapeRoom in json['escape_rooms']) {
-          list.add(EscapeRoomListItem.fromJson(escapeRoom as Map<String, dynamic>));
+          final item = EscapeRoomListItem.fromJson(escapeRoom as Map<String, dynamic>);
+          print('Parsed EscapeRoom: ID=${item.id}, Title=${item.title}');
+          list.add(item);
         }
 
         return list;
-
+      } else {
+        throw Exception('Error al obtener escape rooms: ${response.statusCode}');
+      }
     } catch (e) {
       throw Exception('Error de conexión: $e');
     }
   }
+
 
   /// Obtener el token almacenado
   Future<String?> _getToken() async {

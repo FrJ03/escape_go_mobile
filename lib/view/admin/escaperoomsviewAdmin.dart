@@ -104,6 +104,10 @@ class EscapeRoomRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+                  escapeRoom.id.toString(), // Muestra el título del escape room
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                Text(
                   escapeRoom.title, // Muestra el título del escape room
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),

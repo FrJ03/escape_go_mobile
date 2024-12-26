@@ -3,6 +3,7 @@ import '../widgets/widgets.dart';
 import '../profileview.dart';
 import 'statistics.dart';
 import 'escaperoomsviewAdmin.dart';
+import 'create_escape.dart';
 void main() {
   runApp(MaterialApp(
     home: PanelScreen(),
@@ -49,10 +50,12 @@ class PanelScreen extends StatelessWidget {
                           key: Key('create_escape_button'),
                           value: 'Crear un escape room',
                           color: Color(0xFFA2DAF1),
-                          onPressed: () {
-                            print(
-                                'Debe redireccionar a la página de crear un escape room');
-                          },
+                            onPressed: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => CreateEscapeScreen()),
+                              );
+                            },
                         ),
                       ),
                     ],

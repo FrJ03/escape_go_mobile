@@ -37,8 +37,7 @@ class ModifyEscapeController {
     levelController.clear();
     priceController.clear();
     infoEscape.clear();
-    //Falta la otra página de modificar
-    //Navigator.push(context, route)
+
 
   }
 
