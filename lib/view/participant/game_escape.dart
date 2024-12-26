@@ -14,6 +14,9 @@ void main() {
 }
 
 class GameEscapeScreen extends StatefulWidget {
+  final int escapeRoomId; // RECIBE EL ID DEL ESCAPE ROOM
+  const GameEscapeScreen({Key? key, required this.escapeRoomId}) : super(key: key);
+  
   @override
   _GameEscapeScreenState createState() =>
       _GameEscapeScreenState();
@@ -22,13 +25,14 @@ class GameEscapeScreen extends StatefulWidget {
 class _GameEscapeScreenState extends State<GameEscapeScreen> {
   final GameEscController controller = GameController();
   List<int> cluesIds = []; // Lista para almacenar los IDs de las pistas encontradas
-  int escapeRoomId = 1; // SUPONEMOS QUE EL ID DEL ESCAPE ROOM ES 1 ?? el usuario jugador no puede llamar a metodos que consigan el id del escape room ??
+  late int escapeRoomId; // toma el id para conseguir las pistas del escape room correcto
   String currentClueText = ''; // vamos a rellenar esto con la primera pista
 
 // en cuanto se inicia la vista se pide la primera pista para comenzar el juego
   @override
   void initState() {
     super.initState();
+    escapeRoomId = widget.escapeRoomId;
     _initializeFirstClue();
   }
 	
@@ -95,9 +99,6 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 			  color: Color(0xFFA2DAF1),
 			  onPressed: () async {
 			    try {
-			      // LISTA DE IDS
-			      List<int> cluesIds = []; // CARGA LOS IDS DE LAS PISTAS YA ENCONTRADAS
-			      int escapeRoomId = 1; // SUPONEMOS QUE ES EL ID DEL ESCAPE ROOM ACTUAL
 			      // Llama al backend con getNextClue
 			      Clue nextClue = await controller.getNextClue(cluesIds, escapeRoomId);
 			      // actualiza la lista con la nueva pista
@@ -124,18 +125,12 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 			        },
 			      );
 			    } catch (e) {
-			      // Si hay un error
-			      showDialog(
-			        context: context,
-			        builder: (BuildContext context) {
-			          return AlertDialog(
-			            title: Text('Error'),
-			            content: Text(e.toString()),
-			            actions: [ TextButton( onPressed: () { Navigator.of(context).pop(); }, child: Text('Cerrar'), ), ],
-			          );
-			        },
-			      );
-			    } // Fin del error
+		                ScaffoldMessenger.of(context).showSnackBar(
+		                  SnackBar(
+		                    content: Text("Hubo un error: ${e.toString()}"),
+		                  ),
+		                );
+		              } // Fin del error
 			  }, // Fin de onPressed
 		     ),
                   ],
