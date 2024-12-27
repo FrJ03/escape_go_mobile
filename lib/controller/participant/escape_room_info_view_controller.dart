@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class EscapeRoomInfoViewController{
 
-  final String baseUrl = 'http://192.168.1.45:3000'; // Cambia la IP si es necesario.
+  final String baseUrl = 'http://192.168.1.42:3000'; // Cambia la IP si es necesario.
 
   Future<EscapeRoom>getEscapeRoomInfoById(String id) async { //una funcion para devolver el escape_room con toda su info y luego mostrarlo en el view
 
@@ -15,7 +15,7 @@ class EscapeRoomInfoViewController{
     }
 
 
-    final url = Uri.parse('$baseUrl/escaperoom/participant/info?id=$id'); //URL endpoint getInfo APIparticipant
+    final url = Uri.parse('$baseUrl/escaperoom/participant/info/$id'); //URL endpoint getInfo APIparticipant
 
     final headers = {
       'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ class EscapeRoomInfoViewController{
     if(response.statusCode == 200){ //si se obtiene correctamente lo retornamos a la vista para mostrar la info
 
       final json = jsonDecode(response.body);
-      final escapeRoom = EscapeRoom.fromJson(json);
+      final escapeRoom = EscapeRoom.fromJson(json); //ERROR FAILED TO LOAD ESCAPE_ROOM
 
       return escapeRoom;
 

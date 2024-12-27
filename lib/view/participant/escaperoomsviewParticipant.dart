@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import'../../controller/participant/escape_rooms_controller.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 
+import 'escape_room_info_view.dart';
+
 //Vista para listar todos los Escape Rooms por distancia en el participante
 
 void main() {
@@ -107,6 +109,20 @@ class EscapeRoomRow extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.info, color: Colors.greenAccent),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => EscapeRoomInfoView(id: escapeRoom.id.toString())),
+                        );
+                      },
+                    ),
+                  ],
+                )
               ],
             ),
           ),
