@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../view/admin/panel_admin.dart';
-//Voy a probar un mismo controlador para las dos vistas
-class ModifyEscapeController {
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
+class ModifyEscapeController {
+  final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
 
   final TextEditingController tittleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -11,9 +14,7 @@ class ModifyEscapeController {
   final TextEditingController priceController = TextEditingController();
   List<Map<String, dynamic>> infoEscape = [];
 
-
-  //Simulamos que estos son los datos que hemos cogido al llamar al backend
-  //Hay que pasarle el id por url
+  // Variables iniciales
   String id = '';
   String tittle = '';
   String description = '';
@@ -21,24 +22,75 @@ class ModifyEscapeController {
   String solution = '';
   String price = '';
 
+  Future<void> recoger(BuildContext context, String id) async {
+    final token = await _getToken();
+    if (token == null) {
+      throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+    }
 
-  Future<void> recoger(BuildContext context) async {
-    tittle = tittleController.toString();
-    description = descriptionController.toString();
-    solution = solutionController.toString();
-    level = levelController.toString();
-    price = priceController.toString();
+    // Capturar valores reales desde los controladores
+    tittle = tittleController.text.trim();
+    description = descriptionController.text.trim();
+    solution = solutionController.text.trim();
+    level = levelController.text.trim();
+    price = priceController.text.trim();
 
-    //Esto es solo para ver si se modifica bien en el frontend
-    _showDialog(context, 'Información del Escape', infoEscape.toString());
+
+
+    // Convertir valores
+    int? difficulty = int.tryParse(level);
+    double? parsedPrice = double.tryParse(price);
+    int? identify = int.tryParse(id);
+
+    final escapeRoomData = {
+      'id': identify,
+      'title': tittle,
+      'description': description,
+      'solution': solution,
+      'difficulty': difficulty,
+      'price': parsedPrice,
+    };
+
+    await _modifyEscapeRoom(context, escapeRoomData);
+
+    // Limpiar controladores
     tittleController.clear();
     descriptionController.clear();
     solutionController.clear();
     levelController.clear();
     priceController.clear();
-    infoEscape.clear();
+  }
 
+  Future<void> _modifyEscapeRoom(
+      BuildContext context, Map<String, dynamic> data) async {
+    try {
+      final token = await _getToken(); // Recupera el token almacenado
+      if (token == null) {
+        throw Exception(
+            'No se encontró un token válido. Inicia sesión nuevamente.');
+      }
 
+      final url = Uri.parse('$baseUrl/escaperoom/admin/modify'); // Ruta completa
+      final headers = {
+        'Authorization': token, // Token para autenticación
+        'Content-Type': 'application/json', // Especifica que el cuerpo es JSON
+      };
+
+      final body = json.encode(data);
+      print(body); // Para depuración
+      final response =
+      await http.put(url, headers: headers, body: body); // Realiza el request
+
+      if (response.statusCode == 200) {
+        _showSuccessDialog(context, 'Éxito', 'Escape Room modificado con éxito.');
+      } else {
+        _showDialog(context, 'Error',
+            'Error al modificar el Escape Room: ${response.body}');
+      }
+    } catch (e) {
+      _showDialog(
+          context, 'Error de conexión', 'Hubo un problema con la conexión: $e');
+    }
   }
 
   void confirmCancel(BuildContext context) {
@@ -52,8 +104,10 @@ class ModifyEscapeController {
     );
   }
 
-
-}
+  Future<String?> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
+  }
 
   void _showDialog(
       BuildContext context,
@@ -85,9 +139,22 @@ class ModifyEscapeController {
     );
   }
 
-
-
-
-
-
-
+  void _showSuccessDialog(BuildContext context, String tittle, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          tittle,
+          style: TextStyle(color: Color(0xFFA2F1A5), fontWeight: FontWeight.bold),
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+}

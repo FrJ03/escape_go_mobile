@@ -38,7 +38,7 @@ class ModifyEscapeScreen extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
-                    Text(id),
+
                     SizedBox(height: 16),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -90,7 +90,7 @@ class ModifyEscapeScreen extends StatelessWidget {
                     key: Key('modify_esc_button'),
                     value: 'SIGUIENTE',
                     color: Color(0xFFA2DAF1),
-                    onPressed: () => controller.recoger(context),
+                    onPressed: () => controller.recoger(context, id),
                   ),
                   CustomButton(
                     key: Key('cancel_esc_button'),
