@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GameController{
   Future<bool> register(String userEmail, int participationId, int escapeRoomId) async {
