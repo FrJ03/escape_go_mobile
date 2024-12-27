@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../view/admin/panel_admin.dart';
-import '../../view/admin/create_escape2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -47,24 +46,35 @@ class CreateEscController {
           'Por favor, completa todos los campos obligatorios.');
       return;
     }
+    // Conversión de tipos
+    int? difficulty = int.tryParse(level);
+    double? parsedPrice = double.tryParse(price);
+    int? maxSessionDuration = int.tryParse(duration);
+
+    if (difficulty == null || parsedPrice == null || maxSessionDuration == null) {
+      _showDialog(context, 'Error',
+          'Asegúrate de que los campos "Dificultad", "Precio" y "Duración" sean numéricos.');
+      return;
+    }
 
     // Construir el objeto a enviar
     final escapeRoomData = {
       'title': tittle,
       'description': description,
       'solution': solution,
-      'difficulty': level,
-      'price': price,
-      'duration': duration,
+      'difficulty': difficulty,
+      'price': parsedPrice,
+      'maxSessionDuration': maxSessionDuration,
       'location': {
         'country': country,
         'city': city,
         'street': street,
         'street_number': streetNumber,
         'coordinates': coordinates,
-        'additional_info': additionalInfo,
+        'info': additionalInfo,
       },
     };
+
 
     // Enviar datos al servidor
     await _createEscapeRoom(context, escapeRoomData);
@@ -75,6 +85,7 @@ class CreateEscController {
     solutionController.clear();
     levelController.clear();
     priceController.clear();
+    maxDurationController.clear();
     locationCountryController.clear();
     locationCityController.clear();
     locationStreetController.clear();
