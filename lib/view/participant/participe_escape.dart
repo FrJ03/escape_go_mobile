@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
 import '../../controller/participant/participe_escape_controller.dart';
+import 'game_escape.dart';
 
 void main() {
   runApp(MaterialApp(

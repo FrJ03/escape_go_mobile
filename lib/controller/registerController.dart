@@ -8,7 +8,7 @@ class RegisterController {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   
-  final String baseUrl = 'http://192.168.18.72:3000'; // ¡Cambiar direccion IP! 
+  final String baseUrl = 'http://192.168.18.72:3000'; // ¡Cambiar direccion IP!
   //La direccion IP deberiamos ponerla en el .env
   
   Future<void> register(BuildContext context) async {

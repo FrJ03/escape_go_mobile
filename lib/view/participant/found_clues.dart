@@ -16,7 +16,7 @@ class CluesScreen extends StatelessWidget {
   final List<int> cluesIds;  // Recibe la lista de IDs de pistas
   final int escapeRoomId; // Recibe el escapeRoomId
   // Constructor que recibe cluesIds y escapeRoomId
-  const CluesScreen({
+  CluesScreen({
     Key? key,
     required this.cluesIds,
     required this.escapeRoomId,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
-import 'participate_escape.dart';
+import './participe_escape.dart';
 import 'found_clues.dart';
 import '../../controller/participant/game_controller.dart';
 
@@ -23,7 +23,7 @@ class GameEscapeScreen extends StatefulWidget {
 }
 
 class _GameEscapeScreenState extends State<GameEscapeScreen> {
-  final GameEscController controller = GameController();
+  final GameController controller = GameController();
   List<int> cluesIds = []; // Lista para almacenar los IDs de las pistas encontradas
   late int escapeRoomId; // toma el id para conseguir las pistas del escape room correcto
   String currentClueText = ''; // vamos a rellenar esto con la primera pista
@@ -56,7 +56,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          controller.tittle,
+          controller.title,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         backgroundColor: Color(0xFFA2DAF1),
@@ -145,7 +145,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
                     value: 'SALIR',
                     color: Color(0xFFFFA1A1),
                     onPressed: () {
-                      _showExitDialog(context),
+                      _showExitDialog(context);
                     },
                   ),
 		  CustomButton(
