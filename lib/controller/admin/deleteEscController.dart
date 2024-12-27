@@ -33,7 +33,7 @@ class DeleteEscapeRoomController {
 
 
   Future<http.Response> _deleteEscapeRoomFromServer(int escapeRoomId, String token) async {
-    final url = Uri.parse('$baseUrl/escaperoom/admin/delete$escapeRoomId'); // Ruta para eliminar
+    final url = Uri.parse('$baseUrl/escaperoom/admin/delete/$escapeRoomId'); // Ruta para eliminar
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': token, // Token para autenticación
