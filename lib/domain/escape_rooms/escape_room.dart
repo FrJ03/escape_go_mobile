@@ -21,30 +21,22 @@ class EscapeRoom{
       this._location
   );
 
-  factory EscapeRoom.fromJson(Map<String, dynamic> json){
-    return switch (json) {
-      {
-      'id': int id,
-      'title': String title,
-      'description': String description,
-      'solution': String solution,
-      'difficulty': int difficulty,
-      'price': int price,
-      'max_session_duration': int maxSessionDuration,
-      'location': Map<String, dynamic> location
-      } =>
-          EscapeRoom(
-              id,
-              title,
-              description,
-              solution,
-              difficulty,
-              price,
-              maxSessionDuration,
-              Location.fromJson(location)
-          ),
-      _ => throw const FormatException('Failed to load escape room.'),
-    };
+  factory EscapeRoom.fromJson(Map<String, dynamic> json) {
+    try {
+      final escapeRoomJson = json['escape_room'] as Map<String, dynamic>;
+      return EscapeRoom(
+        escapeRoomJson['id'] as int,
+        escapeRoomJson['title'] as String,
+        escapeRoomJson['description'] as String,
+        escapeRoomJson['solution'] ?? '', // Opcional
+        escapeRoomJson['difficulty'] as int,
+        escapeRoomJson['price'] as int,
+        escapeRoomJson['maxSessionDuration'] as int,
+        Location.fromJson(escapeRoomJson['location'] as Map<String, dynamic>),
+      );
+    } catch (e) {
+      throw FormatException('Failed to load escape room: $e');
+    }
   }
 
   int get id => _id;

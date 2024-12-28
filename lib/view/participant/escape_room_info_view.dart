@@ -49,12 +49,6 @@ class EscapeRoomInfoView extends StatelessWidget {
                   Text(escapeRoom.description),
                   const SizedBox(height: 16.0),
                   Text(
-                    'Solución:',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Text(escapeRoom.solution),
-                  const SizedBox(height: 16.0),
-                  Text(
                     'Dificultad:',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
@@ -64,7 +58,7 @@ class EscapeRoomInfoView extends StatelessWidget {
                     'Precio:',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  Text('\$${escapeRoom.price.toStringAsFixed(2)}'),
+                  Text('${escapeRoom.price.toStringAsFixed(2)}€'),
                   const SizedBox(height: 16.0),
                   Text(
                     'Duración máxima de la sesión:',
@@ -73,10 +67,9 @@ class EscapeRoomInfoView extends StatelessWidget {
                   Text('${escapeRoom.maxSessionDuration} horas'),
                   const SizedBox(height: 16.0),
                   Text(
-                    'Ubicación:{\n',
+                    'Información de Ubicación: \n',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  Text('info: ${escapeRoom.location.info}\n'),
                   Text('country: ${escapeRoom.location.country}\n'),
                   Text('city: ${escapeRoom.location.city}\n'),
                   Text('street: ${escapeRoom.location.street}\n'),
