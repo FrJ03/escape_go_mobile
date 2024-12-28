@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class DeleteEscapeRoomController {
-  final String baseUrl = 'http://192.168.18.80:3000'; // ¡Cambiar dirección IP!
+  final String baseUrl = 'http://192.168.0.15:3000'; // ¡Cambiar dirección IP!
 
   Future<void> deleteEscapeRoom(BuildContext context, int escapeRoomId) async {
     try {
@@ -20,6 +20,7 @@ class DeleteEscapeRoomController {
         _showSuccessDialog(
             context, 'Correcto', 'Escape Room eliminado correctamente.');
       } else if (response.statusCode == 404) {
+        print(escapeRoomId);
         _showDialog(context, 'Error',
             'Escape Room no encontrado. Puede que ya haya sido eliminado.');
       } else {
@@ -33,7 +34,7 @@ class DeleteEscapeRoomController {
 
 
   Future<http.Response> _deleteEscapeRoomFromServer(int escapeRoomId, String token) async {
-    final url = Uri.parse('$baseUrl/escaperoom/admin/delete/$escapeRoomId'); // Ruta para eliminar
+    final url = Uri.parse('$baseUrl/escaperoom/admin/delete/$escapeRoomId');
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': token, // Token para autenticación
