@@ -7,9 +7,12 @@ void main() {
     home: EscapeRoomInfoView(id: ''),
     theme: ThemeData(
       fontFamily: 'Roboto',
+      primaryColor: Color(0xFFA2DAF1),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: Color(0xFF66B2E8),
+      ),
     ),
   ));
-
 }
 
 class EscapeRoomInfoView extends StatelessWidget {
@@ -22,12 +25,12 @@ class EscapeRoomInfoView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles del Escape Room'),
+        title: const Text('Detalles del Escape Room'),
         backgroundColor: Color(0xFFA2DAF1),
-        centerTitle: true
+        centerTitle: true,
       ),
       body: FutureBuilder<EscapeRoom>(
-        future: controller.getEscapeRoomInfoById(id), // Método asíncrono para obtener datos
+        future: controller.getEscapeRoomInfoById(id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -42,44 +45,60 @@ class EscapeRoomInfoView extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: ListView(
                 children: [
-                  Text(
-                    'Descripción:',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Text(escapeRoom.description),
+                  _buildInfoCard('Descripción', escapeRoom.description),
+                  _buildInfoCard('Dificultad', '${escapeRoom.difficulty}'),
+                  _buildInfoCard('Precio', '${escapeRoom.price.toStringAsFixed(2)}€'),
+                  _buildInfoCard('Duración máxima de la sesión', '${escapeRoom.maxSessionDuration} horas'),
                   const SizedBox(height: 16.0),
-                  Text(
-                    'Dificultad:',
-                    style: Theme.of(context).textTheme.titleMedium,
+                  const Text(
+                    'Información de Ubicación',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.black87,
+                    ),
                   ),
-                  Text('${escapeRoom.difficulty}'),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Precio:',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Text('${escapeRoom.price.toStringAsFixed(2)}€'),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Duración máxima de la sesión:',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Text('${escapeRoom.maxSessionDuration} horas'),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Información de Ubicación: \n',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Text('country: ${escapeRoom.location.country}\n'),
-                  Text('city: ${escapeRoom.location.city}\n'),
-                  Text('street: ${escapeRoom.location.street}\n'),
-                  Text('street_number: ${escapeRoom.location.streetNumber}\n'),
-                  Text('coordinates: ${escapeRoom.location.coordinates}')
+                  const SizedBox(height: 8.0),
+                  _buildInfoCard('País', escapeRoom.location.country),
+                  _buildInfoCard('Ciudad', escapeRoom.location.city),
+                  _buildInfoCard('Calle', escapeRoom.location.street),
                 ],
               ),
             );
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(String title, String content) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              content,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
