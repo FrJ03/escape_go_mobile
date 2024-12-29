@@ -8,7 +8,7 @@ class RegisterController {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   
-  final String baseUrl = 'http://192.168.18.72:3000'; // ¡Cambiar direccion IP!
+  final String baseUrl = 'http://192.168.0.15:3000'; // ¡Cambiar direccion IP!
   //La direccion IP deberiamos ponerla en el .env
   
   Future<void> register(BuildContext context) async {
@@ -64,7 +64,7 @@ class RegisterController {
   }
 
   bool isValidEmail(String email) {
-    final regex = RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$');
+    final regex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return regex.hasMatch(email);
   }
 
