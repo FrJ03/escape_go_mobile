@@ -133,6 +133,108 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 		              } // Fin del error
 			  }, // Fin de onPressed
 		     ),
+		     SizedBox(height: 16),
+		     // Boton para resolver el escape room
+		     CustomButton(
+			  key: Key('resolver_button'),
+			  value: 'RESOLVER ESCAPE ROOM',
+			  color: Color(0xFFA2DAF1),
+			  onPressed: () async {
+			    // controlador para el campo de texto de la solucion
+			    TextEditingController solutionController = TextEditingController();
+			    try {
+			      // muestra el pop-up para introducir la solución
+			      showDialog(
+			        context: context,
+			        builder: (BuildContext context) {
+			          return AlertDialog(
+			            title: Text(
+			              'RESOLVER',
+			              style: TextStyle(color: Color(0xFFA2DAF1), fontWeight: FontWeight.bold),
+			            ),
+			            content: Column(
+			              mainAxisSize: MainAxisSize.min,
+			              children: [
+			                Text('¿Cuál es la solución?'),
+			                SizedBox(height: 10),
+			                TextField(
+			                  controller: solutionController,
+			                  decoration: InputDecoration(
+			                    border: OutlineInputBorder(),
+			                    hintText: 'Introduce la solución',
+			                  ),
+			                ),
+			              ],
+			            ),
+			            actions: [
+			              TextButton( // selecciona NO ENVIAR la solucion
+			                onPressed: () => Navigator.pop(context),
+			                child: Text('CANCELAR', style: TextStyle(fontWeight: FontWeight.bold)),
+			              ),
+			              TextButton( // selecciona ENVIAR la solucion
+			                onPressed: () async {
+			                  Navigator.pop(context); // cierra el pop-up que le pide ingresar la solucion
+			                  final solution = solutionController.text.trim(); // consigue el texto del cuadro de texto
+			                  if (solution.isNotEmpty) {
+			                    try {
+					      // obtiene los puntos
+			                      // final points = await controller.solve(solution, escapeRoomId, participationId); // de donde saco participationId ???
+						    // VALOR DE PRUEBA PARA VER SI FUNCIONA ??
+						    final points = 5;
+			                      // pop up con puntos
+			                      showDialog(
+			                        context: context,
+			                        builder: (BuildContext context) {
+			                          return AlertDialog(
+			                            title: Text(
+			                              'Tu puntuación ha sido',
+			                              style: TextStyle(color: Color(0xFFA2DAF1), fontWeight: FontWeight.bold),
+			                            ),
+			                            content: Text('$points puntos'),
+			                            actions: [
+			                              TextButton(
+			                                onPressed: () {
+			                                  Navigator.of(context).pop(); // cerrar dialogo
+							  Navigator.push(context, MaterialPageRoute(
+							    builder: (context) => ParticipateEscapeScreen()),
+							  ); // sacarlo del juego y redirigir a la pagina de participacion por si quiere jugar otra vez
+			                                },
+			                                child: Text('SALIR', style: TextStyle(fontWeight: FontWeight.bold)),
+			                              ),
+			                            ],
+			                          );
+			                        },
+			                      );
+			                    } catch (e) {
+			                      ScaffoldMessenger.of(context).showSnackBar(
+			                        SnackBar(
+			                          content: Text("Hubo un error: ${e.toString()}"),
+			                        ),
+			                      );
+			                    }
+			                  } else {
+			                    ScaffoldMessenger.of(context).showSnackBar(
+			                      SnackBar(
+			                        content: Text("Introduce la solución"),
+			                      ),
+			                    );
+			                  }
+			                },
+			                child: Text('ENVIAR', style: TextStyle(fontWeight: FontWeight.bold)),
+			              ),
+			            ],
+			          );
+			        },
+			      );
+			    } catch (e) {
+			      ScaffoldMessenger.of(context).showSnackBar(
+			        SnackBar(
+			          content: Text("Hubo un error: ${e.toString()}"),
+			        ),
+			      );
+			    }
+			  },
+			); // FIN DEL BOTON PARA RESOLVER ESCAPE ROOM
                   ],
                 ),
               ),
