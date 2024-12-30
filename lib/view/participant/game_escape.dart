@@ -3,6 +3,7 @@ import '../widgets/widgets.dart';
 import './participe_escape.dart';
 import 'found_clues.dart';
 import '../../controller/participant/game_controller.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 void main() {
   runApp(MaterialApp(
