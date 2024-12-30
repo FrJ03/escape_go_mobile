@@ -7,7 +7,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: GameEscapeScreen(escapeRoomId: 0),
+    home: GameEscapeScreen(escapeRoomId: 0, escTitle: ""),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),
@@ -16,7 +16,12 @@ void main() {
 
 class GameEscapeScreen extends StatefulWidget {
   final int escapeRoomId; // RECIBE EL ID DEL ESCAPE ROOM
-  const GameEscapeScreen({Key? key, required this.escapeRoomId}) : super(key: key);
+  final String escTitle; // REDIBE EL NOMBRE DEL ESCAPE ROOM
+  const GameEscapeScreen({
+    Key? key,
+    required this.escapeRoomId,
+    required this.escTitle,
+  }) : super(key: key);
   
   @override
   _GameEscapeScreenState createState() =>
@@ -57,7 +62,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          controller.title,
+          widget.escTitle,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         backgroundColor: Color(0xFFA2DAF1),
