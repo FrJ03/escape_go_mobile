@@ -91,8 +91,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
                     ),
                     SizedBox(height: 16),
 		    RoundedTextBox(
-		      // EN ESTE TEXTO SE PONE LA PISTA ACTUAL
-          	      text: currentClueText,
+          	      text: currentClueText, // Pista actual
           	      borderColor: Color(0xFFA2DAF1), // Color del borde
           	      borderWidth: 4.0, // Ancho del borde
           	      padding: EdgeInsets.all(16), // Espaciado alrededor del texto
