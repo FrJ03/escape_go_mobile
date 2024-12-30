@@ -266,11 +266,34 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 		    }
 		  ),
 		  CustomButton(
-		    key: Key('continue_button'),
-		    value: 'CONTINUAR',
+		    key: Key('scan_button'),
+		    value: 'ESCANEAR',
 		    color: Color(0xFFA2F1A5),
-		    onPressed: () {
-		      // CONTINUAR
+		    onPressed: () async {
+		    // escanea el nfc, obtiene el texto del nfc que es el siguiente fragmento que poner en el cuadro de texto
+		      try{
+			bool isAvailable = await NfcManager.instance.isAvailable();
+			if (isAvailable) {
+			  await NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+			    final tagData = await NfcInferenceManager.instance.infer(tag);
+			    setState(() {
+			      // actualiza el cuadro de texto para que en vez de mostrar la PISTA, muestre el NUEVO FRAGMENTO encontrado
+			      currentClueText = tagData;
+			    });
+			    // detiene la sesion NFC cuando obtiene los datos correctamente
+			    await NfcManager.instance.stopSession();
+			  });
+			} else {
+			  // NO TIENE ACTIVADO PARA LEER NFC
+			  ScaffoldMessenger.of(context).showSnackBar(
+			    SnackBar(content: Text("Activa el ajuste NFC para poder usar esta acción y avanzar en el juego."),),
+			  );
+			}
+		      } catch (e) {
+			ScaffoldMessenger.of(context).showSnackBar(
+			  SnackBar(content: Text("Hubo un error al leer el tag NFC: ${e.toString()}"),),
+			);
+		      }
 		    }
 		  ),
                 ],
