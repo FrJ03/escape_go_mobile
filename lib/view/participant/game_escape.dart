@@ -7,7 +7,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: GameEscapeScreen(),
+    home: GameEscapeScreen(escapeRoomId: 0),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),
@@ -309,7 +309,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 
 void _showExitDialog(
   BuildContext context) {
-    showExitDialog(
+    showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
@@ -325,6 +325,8 @@ void _showExitDialog(
 		setState(() {
     		  cluesIds.clear();
   		});
+		// cierra el dialog y redirige a la página de participate para salir
+		Navigator.pop(context);
 		Navigator.push(context, MaterialPageRoute(
 		  builder: (context) => ParticipateEscapeScreen()),
 		);
