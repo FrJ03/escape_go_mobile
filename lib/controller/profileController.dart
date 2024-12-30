@@ -1,18 +1,17 @@
-import 'package:escape_go_mobile/domain/escape_rooms/escape_room.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/user/user.dart';
-import '../view/delete_account_view.dart';
 class ProfileController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
   Future<User> getUserProfile() async {
     try {
-      final token = await _getToken();
+      String ? token = await _getToken();
       if (token == null) {
         throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
       }
@@ -70,6 +69,66 @@ class ProfileController {
 
   }
 
+  Future<bool> modifyProfile(BuildContext context) async {
+    String username = nameController.text;
+    String password = passwordController.text;
+    String email = emailController.text;
+
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+      }
+
+      if (email != '') {
+        if (!isValidEmail(email)) {
+          _showDialog(context, 'Error', 'Por favor, introduce un correo válido de Gmail.');
+          return false;
+        }
+      }
+
+      final body = jsonEncode(<String, String>{
+        'emailNuevo': email,
+        'username': username,
+        'password': password,
+      });
+      print(body);
+
+      final headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      };
+
+      final response = await http.put(
+        Uri.parse('http://192.168.0.15:3000/profile/update'),
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body); // Decodifica el JSON
+        final token = data['token']; // Obtén el token
+        if (token != null) {
+          // Almacena el token de manera segura
+          await saveToken(token);
+          _showDialog(context, 'Éxito', 'Usuario cambiado correctamente');
+          return true;
+        }
+      } else {
+        _showDialog(context, 'Error', '${response.body}');
+        return false;
+      }
+    } catch (e) {
+      _showDialog(context, 'Error de conexión', 'Error de conexión: $e');
+      return false;
+    }
+
+    // En caso de que por alguna razón no se cubra una ruta
+    throw Exception('Unreachable code reached: modifyProfile() terminó sin devolver un valor.');
+  }
+
+
+
   bool isValidEmail(String email) {
     final regex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return regex.hasMatch(email);
@@ -90,27 +149,17 @@ class ProfileController {
     );
   }
 
-  void _showSuccessDialog(BuildContext context, String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title, style: TextStyle(color: Color(0xFFA2F1A5), fontWeight: FontWeight.bold)),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK', style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
+
 
 
   /// Obtener el token almacenado
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
+  }
+  Future<void> saveToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
   }
 
 }
