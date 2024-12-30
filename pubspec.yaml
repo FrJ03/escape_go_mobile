@@ -34,9 +34,8 @@ dependencies:
   http: ^1.2.2
   shared_preferences: ^2.1.0
 
-# packages for reading nfc tags
-  nfc\_manager: ^0.4.1
-  nfc\_inference\_metadata: ^0.1.2
+# package for reading nfc tags
+  nfc_manager: ^3.5.0
 
 
 
