@@ -25,7 +25,8 @@ class EscapeRoomInfoView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalles del Escape Room'),
+        title: const Text('Detalles Escape Room',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+        ),
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),

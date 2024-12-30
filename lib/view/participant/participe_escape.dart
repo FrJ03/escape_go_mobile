@@ -1,142 +1,117 @@
 import 'package:flutter/material.dart';
-import '../widgets/widgets.dart';
+import '../../domain/escape_rooms/escape_room.dart';
 import '../../controller/participant/participe_escape_controller.dart';
-import 'game_escape.dart';
+import '../widgets/widgets.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: ParticipateEscapeScreen(escapeRoomId: 0),
+    home: ParticipateScreen(id: ''),
     theme: ThemeData(
       fontFamily: 'Roboto',
+      primaryColor: Color(0xFFA2DAF1),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: Color(0xFF66B2E8),
+      ),
     ),
   ));
 }
 
-class ParticipateEscapeScreen extends StatefulWidget {
-  final int escapeRoomId; // RECIBE EL INT DEL ESCAPE ROOM
-  const ParticipateEscapeScreen({Key? key, required this.escapeRoomId}) : super(key: key);
-  @override
-  _ParticipateEscapeScreenState createState() =>
-      _ParticipateEscapeScreenState();
-}
+class ParticipateScreen extends StatelessWidget {
+  ParticipateScreen({super.key, required this.id});
 
-class _ParticipateEscapeScreenState extends State<ParticipateEscapeScreen> {
+  final String id;
   final ParticipateEscController controller = ParticipateEscController();
-  DateTime? selectedSession;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          controller.tittle,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-        ),
+        title: const Text('Participar Escape',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+      ),
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Column(
-                  children: [
-                    SizedBox(height: 16),
-                    Image.asset(
-                      'lib/view/assets/logo.png', // Ruta de tu imagen
-                      width: 150,
-                      height: 150,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      controller.description,
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Nivel de dificultad:',
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    Text(
-                      controller.level,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Precio',
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    Text(
-                      '${(controller.price / 100).toString()}€',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Sesiones',
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                  ],
-                ),
-              ),
-              // Usamos el método del controlador para generar los ListTile
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: controller.dates.length,
-                itemBuilder: (context, index) {
-                  return controller.buildSessionTile(
-                    session: controller.dates[index],
-                    selectedSession: selectedSession,
-                    onSelected: (DateTime? value) {
-                      setState(() {
-                        selectedSession = value;
-                      });
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: FutureBuilder<EscapeRoom>(
+        future: controller.getEscapeRoomInfoById(id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('No se encontraron datos.'));
+          } else {
+            final escapeRoom = snapshot.data!;
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
                 children: [
-                  CustomButton(
-                    key: Key('participe_esc_button'),
-                    value: 'INICIAR',
-                    color: Color(0xFFA2F1A5),
-                    onPressed: () {
-                      if (selectedSession != null) {
-                        controller.participe(context);
-                        // PASAMOS EL ID DEL ESCAPE ROOM A LA VISTA DEL JUEGO CUANDO SE ACEPTA PARTICIPAR
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GameEscapeScreen(
-                              escapeRoomId: widget.escapeRoomId,
-                              escTitle : widget.(controller.tittle),
-                            ),
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Por favor, selecciona una sesión."),
-                          ),
-                        );
-                      }
-                    },
+                  _buildInfoCard('Descripción', escapeRoom.description),
+                  _buildInfoCard('Dificultad', '${escapeRoom.difficulty}'),
+                  _buildInfoCard('Precio', '${escapeRoom.price.toStringAsFixed(2)}€'),
+                  _buildInfoCard('Duración máxima de la sesión', '${escapeRoom.maxSessionDuration} horas'),
+                  const SizedBox(height: 16.0),
+                  const Text(
+                    'Información de Ubicación',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  _buildInfoCard('País', escapeRoom.location.country),
+                  _buildInfoCard('Ciudad', escapeRoom.location.city),
+                  _buildInfoCard('Calle', escapeRoom.location.street),
+                  Center(
+                    child:
+                    CustomButton(
+                      key: Key('start_button'),
+                      value: 'Iniciar escape',
+                      color: Color(0xFFA2DAF1),
+                      onPressed: () {
+                        print('Iniciar escape room');
+                      },
+                    ),
                   ),
                 ],
               ),
-            ],
-          ),
+            );
+          }
+        },
+      ),
+
+    );
+  }
+
+  Widget _buildInfoCard(String title, String content) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              content,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.black87,
+              ),
+            ),
+          ],
         ),
       ),
     );
