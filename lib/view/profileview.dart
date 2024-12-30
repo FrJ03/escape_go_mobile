@@ -4,6 +4,9 @@ import 'loginview.dart';
 import '../controller/profileController.dart';
 import '../domain/user/user.dart';
 import 'delete_account_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'modify_account_view.dart';
+
 
 void main() {
 	runApp(MaterialApp(
@@ -39,13 +42,14 @@ class ProfileScreen extends StatelessWidget {
 						return Center(
 							child: Text(
 								'Error: ${snapshot.error}',
-								style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+								style: TextStyle(
+										color: Colors.red, fontWeight: FontWeight.bold),
 							),
 						);
 					} else if (snapshot.hasData) {
 						// Mostrar los datos del usuario
 						final user = snapshot.data!;
-						return buildProfile(context,user);
+						return buildProfile(context, user);
 					} else {
 						// Manejar el caso de datos nulos (por si acaso)
 						return Center(child: Text('No se encontraron datos.'));
@@ -68,9 +72,9 @@ class ProfileScreen extends StatelessWidget {
 					SizedBox(height: 30),
 					buildProfileDetail('Email:', user.email),
 					SizedBox(height: 30),
-					buildProfileDetail('Role:', user.role ?? 'N/A'),
+					buildProfileDetail('Role:', user.role),
 					SizedBox(height: 30),
-					buildProfileDetail('Puntos:', user.points.toString() ?? '0'),
+					buildProfileDetail('Puntos:', user.points.toString()),
 					SizedBox(height: 100),
 					Center(
 						child: Column(
@@ -80,7 +84,11 @@ class ProfileScreen extends StatelessWidget {
 									value: 'Modificar perfil',
 									color: Color(0xFFA2DAF1),
 									onPressed: () {
-										print('Modificar perfil presionado');
+										Navigator.pushReplacement(
+											context,
+											MaterialPageRoute(
+													builder: (context) => ModifyAccountScreen()),
+										);
 									},
 								),
 								SizedBox(height: 16),
@@ -91,7 +99,8 @@ class ProfileScreen extends StatelessWidget {
 									onPressed: () {
 										Navigator.pushReplacement(
 											context,
-											MaterialPageRoute(builder: (context) => DeleteAccountScreen()),
+											MaterialPageRoute(
+													builder: (context) => DeleteAccountScreen()),
 										);
 									},
 								),
@@ -124,7 +133,7 @@ class ProfileScreen extends StatelessWidget {
 					style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
 				),),
 				SizedBox(height: 5),
-				Center(child:Text(
+				Center(child: Text(
 					value,
 					style: TextStyle(fontSize: 16),
 				),)
@@ -133,38 +142,49 @@ class ProfileScreen extends StatelessWidget {
 	}
 
 
-
 	void showLogoutDialog(BuildContext context) {
 		showDialog(
 			context: context,
-			builder: (context) => AlertDialog(
-				title: Text(
-					'¿Quieres cerrar sesión?',
-					textAlign: TextAlign.center,
-					style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold),
-				),
-				content: Text('Si pulsas cerrar sesión tendrás que volver a iniciar sesión.'),
-				actions: [
-					TextButton(
-						onPressed: () {
-							FocusScope.of(context).unfocus();
-							Navigator.pushAndRemoveUntil(
-								context,
-								MaterialPageRoute(builder: (context) => LoginScreen()),
-										(route) => false,
-							);
-						},
-						child: Text('Cerrar sesión', style: TextStyle(fontWeight: FontWeight.bold)),
+			builder: (context) =>
+					AlertDialog(
+						title: Text(
+							'¿Quieres cerrar sesión?',
+							textAlign: TextAlign.center,
+							style: TextStyle(
+									color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold),
+						),
+						content: Text(
+								'Si pulsas cerrar sesión tendrás que volver a iniciar sesión.'),
+						actions: [
+							TextButton(
+								onPressed: () async {
+									// Limpiar el token almacenado
+									final SharedPreferences prefs = await SharedPreferences
+											.getInstance();
+									await prefs.remove(
+											'token'); // Elimina el token de las preferencias
+
+									// Navegar a la pantalla de inicio de sesión
+									FocusScope.of(context).unfocus();
+									Navigator.pushAndRemoveUntil(
+										context,
+										MaterialPageRoute(builder: (context) => LoginScreen()),
+												(route) => false,
+									);
+								},
+								child: Text('Cerrar sesión',
+										style: TextStyle(fontWeight: FontWeight.bold)),
+							),
+							TextButton(
+								onPressed: () {
+									FocusScope.of(context).unfocus();
+									Navigator.pop(context);
+								},
+								child: Text(
+										'Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
+							),
+						],
 					),
-					TextButton(
-						onPressed: () {
-							FocusScope.of(context).unfocus();
-							Navigator.pop(context);
-						},
-						child: Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
-					),
-				],
-			),
 		);
 	}
 }
