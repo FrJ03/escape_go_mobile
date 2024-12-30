@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../view/admin/panel_admin.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ModifyEscapeController {
-  final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
+  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
 
   final TextEditingController tittleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();

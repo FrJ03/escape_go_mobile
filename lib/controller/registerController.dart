@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:escape_go_mobile/view/loginview.dart';
 
@@ -7,9 +8,8 @@ class RegisterController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  
-  final String baseUrl = 'http://192.168.0.15:3000'; // ¡Cambiar direccion IP!
-  //La direccion IP deberiamos ponerla en el .env
+
+  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
   
   Future<void> register(BuildContext context) async {
     String name = nameController.text.trim();

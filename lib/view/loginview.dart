@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'widgets/widgets.dart';
 import 'registerview.dart';
 import '../controller/loginController.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+
+  await dotenv.load(); //cargamos las variables de entorno
+
   runApp(MaterialApp(
     home: LoginScreen(),
     theme: ThemeData(

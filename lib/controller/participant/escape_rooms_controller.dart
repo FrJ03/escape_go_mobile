@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/participation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 class EscapeRoomsController{
-  final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
+  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
 
   Future<List<EscapeRoomListItem>> getEscapeRooms() async {
     try {

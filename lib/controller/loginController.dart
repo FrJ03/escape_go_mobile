@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:escape_go_mobile/view/participant/panel_participant.dart';
-import 'package:escape_go_mobile/view/admin/escaperoomsviewAdmin.dart';
-import 'package:escape_go_mobile/view/admin/statistics.dart';
 import 'package:escape_go_mobile/view/admin/panel_admin.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 class LoginController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  final String baseUrl = 'http://192.168.0.15:3000'; // ¡Cambiar direccion IP!
+  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
 
   Future<void> login(BuildContext context) async {
     String email = nameController.text;

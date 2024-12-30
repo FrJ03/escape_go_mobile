@@ -4,11 +4,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../domain/user/user.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ProfileController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final String baseUrl = 'http://192.168.0.15:3000'; // Cambia la IP si es necesario.
+  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
   Future<User> getUserProfile() async {
     try {
       String ? token = await _getToken();

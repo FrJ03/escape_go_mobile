@@ -1,9 +1,13 @@
 import 'package:escape_go_mobile/view/loginview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'widgets/widgets.dart';
 import 'package:escape_go_mobile/controller/registerController.dart';
 
-void main() {
+void main() async {
+
+  await dotenv.load(); //cargamos las variables de entorno de .env
+
   runApp(MaterialApp(
     home: RegisterScreen(),
     theme: ThemeData(
