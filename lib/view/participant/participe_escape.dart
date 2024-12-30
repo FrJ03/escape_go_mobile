@@ -120,6 +120,7 @@ class _ParticipateEscapeScreenState extends State<ParticipateEscapeScreen> {
                           MaterialPageRoute(
                             builder: (context) => GameEscapeScreen(
                               escapeRoomId: widget.escapeRoomId,
+                              escTitle : widget.(controller.tittle),
                             ),
                           ),
                         );
