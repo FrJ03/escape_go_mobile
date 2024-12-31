@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
 import '../../controller/admin/modifyEscController.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home: ModifyEscapeScreen(id: ''),
-    theme: ThemeData(
-      fontFamily: 'Roboto',
-    ),
-  ));
-}
+import '../../view/admin/modify_escape2.dart';
 
 class ModifyEscapeScreen extends StatelessWidget {
   final String id;
-  final ModifyEscapeController controller = ModifyEscapeController();
+  final ModifyEscapeController controller;
 
-  ModifyEscapeScreen({Key? key, required this.id}) : super(key: key);
+  ModifyEscapeScreen({Key? key, required this.id})
+      : controller = ModifyEscapeController(Id: id), // Inicialización en el constructor
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,47 +32,36 @@ class ModifyEscapeScreen extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
-
                     SizedBox(height: 16),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: TextField(
-                        controller: controller.tittleController,
-                        decoration: InputDecoration(
-                          hintText: 'Introduzca el título del Escape Room',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
+                    _buildRowWithLabelAndTextField(
+                      label: 'Título:',
+                      controller: controller.tittleController,
+                      hintText: 'Introduzca el título del Escape Room',
                     ),
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
-                      context,
                       label: 'Descripción:',
                       controller: controller.descriptionController,
                       hintText: 'Introduzca una descripción',
                     ),
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
-                      context,
                       label: 'Nivel de dificultad:',
                       controller: controller.levelController,
                       hintText: 'Introduzca el nivel de dificultad',
                     ),
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
-                      context,
-                      label: 'Solución :',
+                      label: 'Solución:',
                       controller: controller.solutionController,
                       hintText: 'Introduzca la solución del Escape Room',
                     ),
                     SizedBox(height: 16),
                     _buildRowWithLabelAndTextField(
-                      context,
                       label: 'Precio:',
                       controller: controller.priceController,
                       hintText: 'Introduzca el precio del Escape Room',
                     ),
-
                   ],
                 ),
               ),
@@ -90,14 +73,23 @@ class ModifyEscapeScreen extends StatelessWidget {
                     key: Key('modify_esc_button'),
                     value: 'SIGUIENTE',
                     color: Color(0xFFA2DAF1),
-                    onPressed: () => controller.recoger(context, id),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ModifyEscapeRoomScreen(
+                            controller: controller,
+                            id: id
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   CustomButton(
                     key: Key('cancel_esc_button'),
                     value: 'CANCELAR',
                     color: Color(0xFFFFA1A1),
                     onPressed: () => controller.confirmCancel(context),
-
                   ),
                 ],
               ),
@@ -107,18 +99,18 @@ class ModifyEscapeScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _buildRowWithLabelAndTextField(
-      BuildContext context, {
-        required String label,
-        required TextEditingController controller,
-        required String hintText,
-      }) {
+
+  Widget _buildRowWithLabelAndTextField({
+    required String label,
+    required TextEditingController controller,
+    required String hintText,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(width: 10),
         Expanded(
-          flex: 3, // Proporción para el texto
+          flex: 3,
           child: Text(
             label,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -126,14 +118,12 @@ class ModifyEscapeScreen extends StatelessWidget {
         ),
         SizedBox(width: 10),
         Expanded(
-          flex: 7, // Proporción para el campo de texto
+          flex: 7,
           child: TextField(
             controller: controller,
             decoration: InputDecoration(
               hintText: hintText,
-              border: OutlineInputBorder(
-
-              ),
+              border: OutlineInputBorder(),
             ),
           ),
         ),
@@ -141,4 +131,3 @@ class ModifyEscapeScreen extends StatelessWidget {
     );
   }
 }
-

@@ -1,160 +1,121 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class ModifyEscapeController {
-  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
 
   final TextEditingController tittleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController levelController = TextEditingController();
   final TextEditingController solutionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
-  List<Map<String, dynamic>> infoEscape = [];
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController storyController = TextEditingController();
 
-  // Variables iniciales
-  String id = '';
-  String tittle = '';
-  String description = '';
-  String level = '';
-  String solution = '';
-  String price = '';
+  final List<Map<String, String>> clues = [];
+  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND'; // Cambia por tu URL
+  final String Id;
 
+  ModifyEscapeController({required this.Id}) {
+    // Verifica si el ID se pasa correctamente al crear la instancia del controlador
+    print('ID inicializado en ModifyEscapeController: $Id');
+
+  }
+  /// Recoger datos de ambas vistas y enviar a la API
   Future<void> recoger(BuildContext context, String id) async {
+
+
+    final String title = tittleController.text!.trim();
+    final String description = descriptionController.text.trim();
+    final String solution = solutionController.text.trim();
+    final String level = levelController.text.trim();
+    final String price = priceController.text.trim();
+
+    if (title.isEmpty || description.isEmpty || solution.isEmpty || level.isEmpty || price.isEmpty) {
+      _showDialog(context, 'Error', 'Por favor, rellena todos los campos obligatorios.');
+      return;
+    }
+
+    int number = int.parse(id);
+    final Map<String, dynamic> requestBody = {
+      'id': number,
+      'title': title,
+      'description': description,
+      'solution': solution,
+      'difficulty': level,
+      'price': price,
+      'clues': clues,
+    };
+    print(requestBody);
     final token = await _getToken();
-    if (token == null) {
+    if(token == null){
       throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
     }
 
-    // Capturar valores reales desde los controladores
-    tittle = tittleController.text.trim();
-    description = descriptionController.text.trim();
-    solution = solutionController.text.trim();
-    level = levelController.text.trim();
-    price = priceController.text.trim();
-
-
-
-    // Convertir valores
-    int? difficulty = int.tryParse(level);
-    double? parsedPrice = double.tryParse(price);
-    int? identify = int.tryParse(id);
-
-    final escapeRoomData = {
-      'id': identify,
-      'title': tittle,
-      'description': description,
-      'solution': solution,
-      'difficulty': difficulty,
-      'price': parsedPrice,
-    };
-
-    await _modifyEscapeRoom(context, escapeRoomData);
-
-    // Limpiar controladores
-    tittleController.clear();
-    descriptionController.clear();
-    solutionController.clear();
-    levelController.clear();
-    priceController.clear();
-  }
-
-  Future<void> _modifyEscapeRoom(
-      BuildContext context, Map<String, dynamic> data) async {
     try {
-      final token = await _getToken(); // Recupera el token almacenado
-      if (token == null) {
-        throw Exception(
-            'No se encontró un token válido. Inicia sesión nuevamente.');
-      }
+      final response = await http.put(
+        Uri.parse('$baseUrl/escaperoom/admin/modify'),
+        headers: {'Authorization': token,'Content-Type': 'application/json',},
+        body: jsonEncode(requestBody),
+      );
 
-      final url = Uri.parse('$baseUrl/escaperoom/admin/modify'); // Ruta completa
-      final headers = {
-        'Authorization': token, // Token para autenticación
-        'Content-Type': 'application/json', // Especifica que el cuerpo es JSON
-      };
-
-      final body = json.encode(data);
-      print(body); // Para depuración
-      final response =
-      await http.put(url, headers: headers, body: body); // Realiza el request
 
       if (response.statusCode == 200) {
-        _showSuccessDialog(context, 'Éxito', 'Escape Room modificado con éxito.');
+        _showDialog(context, 'Éxito', 'Escape Room modificado correctamente.');
       } else {
-        _showDialog(context, 'Error',
-            'Error al modificar el Escape Room: ${response.body}');
+        _showDialog(context, 'Error', '${response.statusCode}');
       }
     } catch (e) {
-      _showDialog(
-          context, 'Error de conexión', 'Hubo un problema con la conexión: $e');
+      _showDialog(context, 'Error', 'Ocurrió un error al conectar con el servidor.');
     }
   }
 
+  /// Mostrar diálogo para mensajes de error o éxito
+  void _showDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Confirmar cancelación
   void confirmCancel(BuildContext context) {
-    _showDialog(
-      context,
-      'Cancelar',
-      '¿Estás seguro de que quieres cancelar el proceso?',
-      onConfirm: () {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Cancelar'),
+        content: Text('¿Estás seguro de que deseas cancelar los cambios?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Sí'),
+          ),
+        ],
+      ),
+    ).then((result) {
+      if (result == true) {
         Navigator.pop(context);
-      },
-    );
-  }
-
-  Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('auth_token');
-  }
-
-  void _showDialog(
-      BuildContext context,
-      String tittle,
-      String message, {
-        VoidCallback? onConfirm, // Callback opcional
-      }) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          tittle,
-          style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold),
-        ),
-        content: Text(message),
-        actions: [
-          if (onConfirm != null) // Muestra este botón solo si hay callback
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('SÍ', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            // Solo cierra el diálogo
-            child: Text('NO', style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showSuccessDialog(BuildContext context, String tittle, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          tittle,
-          style: TextStyle(color: Color(0xFFA2F1A5), fontWeight: FontWeight.bold),
-        ),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK', style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
+      }
+    });
   }
 }
+Future<String?> _getToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('auth_token');
+}
+

@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
-import '../../controller/admin/modifyEscController2.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home: ModifyEscapeRoomScreen(),
-    theme: ThemeData(fontFamily: 'Roboto'),
-  ));
-}
-
+import '../../controller/admin/modifyEscController.dart';
 
 class ModifyEscapeRoomScreen extends StatefulWidget {
+
+
+  ModifyEscapeRoomScreen({Key? key, required this.controller, required this.id}) : super(key: key);
+  final ModifyEscapeController controller;
+  final String id;
   @override
   _ModifyEscapeRoomScreenState createState() => _ModifyEscapeRoomScreenState();
 }
 
 class _ModifyEscapeRoomScreenState extends State<ModifyEscapeRoomScreen> {
-  final EscapeRoomController controller = EscapeRoomController();
   void _showDialog(String title, String message) {
     showDialog(
       context: context,
@@ -32,14 +28,10 @@ class _ModifyEscapeRoomScreenState extends State<ModifyEscapeRoomScreen> {
       ),
     );
   }
-  @override
-  void dispose() {
-    controller.storyController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    final controller = widget.controller;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -82,38 +74,36 @@ class _ModifyEscapeRoomScreenState extends State<ModifyEscapeRoomScreen> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 8),
-
               SizedBox(height: 16),
               Center(
                 child: CustomButton(
                   value: 'GUARDAR PISTA',
                   color: Color(0xFFA2F1A5),
-                  onPressed: () => setState(() {
-                    controller.addFragment(() {
+                  onPressed: () {
+                    if (controller.storyController.text.trim().isEmpty) {
                       _showDialog('Error', 'El campo de historia está vacío.');
-                    });
-                  }),
+                    } else {
+                      controller.clues.add({
+                        'name': controller.nameController.text.trim(),
+                        'info': controller.storyController.text.trim(),
+                      });
+                      controller.nameController.clear();
+                      controller.storyController.clear();
+                      setState(() {});
+                    }
+                  },
                 ),
               ),
-
               SizedBox(height: 16),
               Text(
                 'Pistas creadas:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              ...controller.fragments.asMap().entries.map((entry) {
-                int index = entry.key;
-                Map<String, dynamic> fragment = entry.value;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Card(
-                    child: ListTile(
-                      title: Text('$index ${fragment['name']}'),
-                      subtitle: Text(
-                        '${fragment['info']}',
-                      ),
-                    ),
+              ...controller.clues.map((clue) {
+                return Card(
+                  child: ListTile(
+                    title: Text(clue['name'] ?? 'Nombre no disponible'),
+                    subtitle: Text(clue['info'] ?? 'Información no disponible'),
                   ),
                 );
               }).toList(),
@@ -124,16 +114,15 @@ class _ModifyEscapeRoomScreenState extends State<ModifyEscapeRoomScreen> {
                   CustomButton(
                     value: 'CANCELAR',
                     color: Color(0xFFFFA1A1),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                   CustomButton(
                     value: 'CREAR',
                     color: Color(0xFFA2F1A5),
-                    onPressed: () {
-                      _showDialog('Crear Escape Room', 'Escape Room creado exitosamente.');
-                      //Aqui se llamará a la función de recoger los fragmentos
+                    onPressed: () async {
+                      await controller.recoger(context, widget.id);
+
+
                     },
                   ),
                 ],
