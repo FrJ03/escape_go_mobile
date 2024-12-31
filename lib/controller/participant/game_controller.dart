@@ -21,7 +21,7 @@ class GameController{
   }
 
 // pide la siguiente pista del escape room
-  Future<Clue> getNextClue(List<int> cluesIds, int escapeRoomId) async {
+  Future<Clue> getNextClue(List<int> cluesIds, int escapeRoomId, int participationId) async {
     try {
       // Obtener el token del usuario autenticado
       final token = await _getToken();
@@ -34,6 +34,7 @@ class GameController{
       final Object body = {
         'clues_ids': cluesIds,
         'escape_room_id': escapeRoomId,
+        'participation_id': participationId,
       };
       // Encabezados para la autenticación y el contenido
       final headers = {
@@ -65,7 +66,7 @@ class GameController{
 
 
   // Obtiene pista específica a partir de ID
-  Future<Clue> getClue(int clueId, int escapeRoomId) async {
+  Future<Clue> getClue(int clueId, int escapeRoomId, int participationId) async {
     try {
       // Obtener el token del usuario autenticado
       final token = await _getToken();
@@ -78,6 +79,7 @@ class GameController{
       final Object body = {
         'clue_id': clueId,
         'escape_room_id': escapeRoomId,
+        'participation_id': participationId,
       };
       // Encabezados
       final headers = {
@@ -122,7 +124,7 @@ class GameController{
         final Object body = {
           'solution': solution,
           'escape_room_id': escapeRoomId,
-  	'participation_id': participationId,
+  	      'participation_id': participationId,
         };
         // Encabezados
         final headers = {
