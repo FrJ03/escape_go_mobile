@@ -85,8 +85,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     Text(
-		      // tiempo que le queda al user para resolver el escape room
-                      '5 minutos',
+		      "5 minutos",
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(height: 16),
