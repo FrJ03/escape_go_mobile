@@ -4,11 +4,10 @@ import './participe_escape.dart';
 import 'found_clues.dart';
 import '../../controller/participant/game_controller.dart';
 import 'package:nfc_manager/nfc_manager.dart';
-import 'dart:async'; // para el temporizador que cuente atrás
 
 void main() {
   runApp(MaterialApp(
-    home: GameEscapeScreen(escapeRoomId: 0, escTitle: "", maxDur: 0),
+    home: GameEscapeScreen(escapeRoomId: 0, escTitle: ""),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),
@@ -18,12 +17,10 @@ void main() {
 class GameEscapeScreen extends StatefulWidget {
   final int escapeRoomId; // RECIBE EL ID DEL ESCAPE ROOM
   final String escTitle; // REDIBE EL NOMBRE DEL ESCAPE ROOM
-  final int maxDur; // RECIBE LA DURACIÓN MÁXIMA DEL JUEGO
   const GameEscapeScreen({
     Key? key,
     required this.escapeRoomId,
     required this.escTitle,
-    required this.maxDur,
   }) : super(key: key);
   
   @override
@@ -36,23 +33,13 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
   List<int> cluesIds = []; // Lista para almacenar los IDs de las pistas encontradas
   late int escapeRoomId; // toma el id para conseguir las pistas del escape room correcto
   String currentClueText = ''; // vamos a rellenar esto con la primera pista
-  late int _remainingTime; // viempo restante en segundos para que sea máx fácil representar
-  late Timer _timer;
 
 // en cuanto se inicia la vista se pide la primera pista para comenzar el juego
   @override
   void initState() {
     super.initState();
     escapeRoomId = widget.escapeRoomId;
-    _remainingTime = widget.maxDur;
-    _startTimer();
     _initializeFirstClue();
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel(); // CANCELA EL TEMPORIZADOR AL SALIR
-    super.dispose();
   }
 	
   // OBTIENE LA PRIMERA PISTA EN CUANTO COMIENZA EL JUEGO
@@ -68,54 +55,6 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
         currentClueText = 'No se pudo obtener la pista.';
       });
     }
-  }
-
-	// INICIA EL TEMPORIZADOR
-  void _startTimer() {
-	  // ACTUALIZA LA VISTA CADA SEGUNDO
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_remainingTime > 0) {
-          _remainingTime--;
-        } else {
-          _timer.cancel();
-          _showTimeUpDialog(); // CUANDO SE TERMINA EL TIEMPO MUESTRA UN POP UP
-        }
-      });
-    });
-  }
-
-	// POP UP SI SE TERMINA EL TIEMPO
-  void _showTimeUpDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Se acabó el tiempo.',
-            style: TextStyle(
-              color: Color(0xFFFFA1A1),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text('Se ha terminado el tiempo para resolver el escape room.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Cierra el pop-up
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ParticipateEscapeScreen(),
-                  ),
-                ); // Redirige al usuario a la pantalla de participación por si quiere jugar otra vez
-              },
-              child: Text('Salir'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -146,7 +85,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     Text(
-		      '$_remainingTime segundos',
+		      "5 minutos",
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(height: 16),
