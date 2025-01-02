@@ -3,7 +3,7 @@ import'../../controller/participant/game_controller.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: CluesScreen(),
+    home: CluesScreen(cluesIds: [],escapeRoomId: 0),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../domain/escape_rooms/escape_room.dart';
 import '../../controller/participant/participe_escape_controller.dart';
 import '../widgets/widgets.dart';
+import 'game_escape.dart';
+import 'dart:convert';
 
 void main() {
   runApp(MaterialApp(
@@ -71,7 +73,10 @@ class ParticipateScreen extends StatelessWidget {
                       value: 'Iniciar escape',
                       color: Color(0xFFA2DAF1),
                       onPressed: () {
-                        print('Iniciar escape room');
+                        int Id= int.parse(id);
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => GameEscapeScreen(escapeRoomId: Id,escTitle: escapeRoom.title, escDescripcion: escapeRoom.description),
+                        )); // sacarlo del juego y redirigir a la pagina de participacion por si quiere jugar otra vez
                       },
                     ),
                   ),

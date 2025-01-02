@@ -7,7 +7,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: GameEscapeScreen(escapeRoomId: 0, escTitle: ""),
+    home: GameEscapeScreen(escapeRoomId: 0, escTitle: "", escDescripcion: ""),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),
@@ -17,11 +17,13 @@ void main() {
 class GameEscapeScreen extends StatefulWidget {
   final int escapeRoomId; // RECIBE EL ID DEL ESCAPE ROOM
   final String escTitle; // REDIBE EL NOMBRE DEL ESCAPE ROOM
+	final String escDescripcion;
   const GameEscapeScreen({
     Key? key,
     required this.escapeRoomId,
     required this.escTitle,
-  }) : super(key: key);
+		required this.escDescripcion,
+	}) : super(key: key);
   
   @override
   _GameEscapeScreenState createState() =>
@@ -181,9 +183,9 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 			                  final solution = solutionController.text.trim(); // consigue el texto del cuadro de texto
 			                  if (solution.isNotEmpty) {
 			                    try {
-					      // obtiene los puntos
+					      						// obtiene los puntos
 			                      // final points = await controller.solve(solution, escapeRoomId, participationId); // de donde saco participationId ???
-						    // VALOR DE PRUEBA PARA VER SI FUNCIONA ??
+						    						// VALOR DE PRUEBA PARA VER SI FUNCIONA ??
 						    final points = 5;
 			                      // pop up con puntos
 			                      showDialog(
@@ -199,9 +201,9 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 			                              TextButton(
 			                                onPressed: () {
 			                                  Navigator.of(context).pop(); // cerrar dialogo
-							  Navigator.push(context, MaterialPageRoute(
-							    builder: (context) => ParticipateEscapeScreen()),
-							  ); // sacarlo del juego y redirigir a la pagina de participacion por si quiere jugar otra vez
+							  												Navigator.push(context, MaterialPageRoute(
+							    												builder: (context) => ParticipateScreen(id: escapeRoomId.toString())),
+							  												); // sacarlo del juego y redirigir a la pagina de participacion por si quiere jugar otra vez
 			                                },
 			                                child: Text('SALIR', style: TextStyle(fontWeight: FontWeight.bold)),
 			                              ),
@@ -238,7 +240,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 			      );
 			    }
 			  },
-			); // FIN DEL BOTON PARA RESOLVER ESCAPE ROOM
+			) // FIN DEL BOTON PARA RESOLVER ESCAPE ROOM
                   ],
                 ),
               ),
@@ -268,37 +270,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 		      );
 		    }
 		  ),
-		  CustomButton(
-		    key: Key('scan_button'),
-		    value: 'ESCANEAR',
-		    color: Color(0xFFA2F1A5),
-		    onPressed: () async {
-		    // escanea el nfc, obtiene el texto del nfc que es el siguiente fragmento que poner en el cuadro de texto
-		      try{
-			bool isAvailable = await NfcManager.instance.isAvailable();
-			if (isAvailable) {
-			  await NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-			    final tagData = await NfcInferenceManager.instance.infer(tag);
-			    setState(() {
-			      // actualiza el cuadro de texto para que en vez de mostrar la PISTA, muestre el NUEVO FRAGMENTO encontrado
-			      currentClueText = tagData;
-			    });
-			    // detiene la sesion NFC cuando obtiene los datos correctamente
-			    await NfcManager.instance.stopSession();
-			  });
-			} else {
-			  // NO TIENE ACTIVADO PARA LEER NFC
-			  ScaffoldMessenger.of(context).showSnackBar(
-			    SnackBar(content: Text("Activa el ajuste NFC para poder usar esta acción y avanzar en el juego."),),
-			  );
-			}
-		      } catch (e) {
-			ScaffoldMessenger.of(context).showSnackBar(
-			  SnackBar(content: Text("Hubo un error al leer el tag NFC: ${e.toString()}"),),
-			);
-		      }
-		    }
-		  ),
+
                 ],
               ),
             ],
@@ -307,7 +279,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
       ),
     );
   }
-}
+
 
 
 void _showExitDialog(
@@ -325,15 +297,15 @@ void _showExitDialog(
 	     // SALIR DEL ESCAPE ROOM, SE TIENE QUE BORRAR ALGO MÁS ??
              onPressed: () {
 		     // vacia la lista de pistas
-		setState(() {
+					setState(() {
     		  cluesIds.clear();
-  		});
-		// cierra el dialog y redirige a la página de participate para salir
-		Navigator.pop(context);
-		Navigator.push(context, MaterialPageRoute(
-		  builder: (context) => ParticipateEscapeScreen()),
-		);
-	     },
+  				});
+					// cierra el dialog y redirige a la página de participate para salir
+					Navigator.pop(context);
+					Navigator.push(context, MaterialPageRoute(
+		  		builder: (context) => ParticipateScreen(id:escapeRoomId.toString())
+					));
+	     		},
              child: Text('SÍ', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           TextButton(
@@ -345,7 +317,6 @@ void _showExitDialog(
     );
   }
 }
-
 
 class RoundedTextBox extends StatelessWidget {
   final String text;

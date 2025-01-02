@@ -10,7 +10,7 @@ class GameController{
       'escape_room_id': escapeRoomId
     };
 
-    final response = await http.post(Uri.parse('http://localhost:3000/game/register'), body: body);
+    final response = await http.post(Uri.parse('http://192.168.0.15:3000/game/register'), body: body);
 
     if(response.statusCode == 200){
       return true;
@@ -29,7 +29,7 @@ class GameController{
         throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
       }
       // URL del endpoint
-      final url = Uri.parse('http://localhost:3000/game/clue');
+      final url = Uri.parse('http://192.168.0.15:3000/game/clue');
       // Cuerpo de la solicitud
       final Object body = {
         'clues_ids': cluesIds,
@@ -74,7 +74,7 @@ class GameController{
         throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
       }
       // ENDPOINT
-      final url = Uri.parse('http://localhost:3000/game/clue/$clueId');
+      final url = Uri.parse('http://192.168.0.15:3000/game/clue/$clueId');
       // Cuerpo de la solicitud
       final Object body = {
         'clue_id': clueId,
@@ -119,7 +119,7 @@ class GameController{
           throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
         }
         // ENDPOINT
-        final url = Uri.parse('http://localhost:3000/game/solve');
+        final url = Uri.parse('http://192.168.0.15:3000/game/solve');
         // Cuerpo de la solicitud
         final Object body = {
           'solution': solution,
