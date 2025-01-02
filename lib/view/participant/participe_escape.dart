@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../domain/escape_rooms/escape_room.dart';
 import '../../controller/participant/participe_escape_controller.dart';
-import '../widgets/widgets.dart';
-import 'dart:convert';
+
 import '../../domain/escape_rooms/participation.dart';
 import 'game_escape.dart';
+
 void main() {
   runApp(MaterialApp(
     home: ParticipateScreen(id: ''),
@@ -28,7 +28,8 @@ class ParticipateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Participar Escape',
+        title: const Text(
+          'Participar Escape',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         backgroundColor: Color(0xFFA2DAF1),
@@ -79,8 +80,8 @@ class ParticipateScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8.0),
-                  ..._buildParticipationList(escapeRoom.participations),
-
+                  ..._buildParticipationList(
+                      context, escapeRoom.participations, escapeRoom),
                 ],
               ),
             );
@@ -122,7 +123,11 @@ class ParticipateScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildParticipationList(List<Participation>? participations, String escTitle, ) {
+  List<Widget> _buildParticipationList(
+      BuildContext context,
+      List<Participation>? participations,
+      EscapeRoom escapeRoom,
+      ) {
     if (participations == null || participations.isEmpty) {
       return [
         const Text(
@@ -142,7 +147,6 @@ class ParticipateScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ID
               Row(
                 children: [
                   const Icon(Icons.confirmation_number, color: Colors.blue),
@@ -158,7 +162,6 @@ class ParticipateScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              // Fecha de inicio
               Row(
                 children: [
                   const Icon(Icons.calendar_today, color: Colors.green),
@@ -170,7 +173,6 @@ class ParticipateScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              // Fecha de fin
               Row(
                 children: [
                   const Icon(Icons.access_time, color: Colors.orange),
@@ -182,7 +184,6 @@ class ParticipateScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              // Puntos
               Row(
                 children: [
                   const Icon(Icons.score, color: Colors.red),
@@ -194,11 +195,22 @@ class ParticipateScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              // Botón de acción
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    GameEscapeScreen(participationId: participation.id,escTitle:escapeRoom.title,)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GameEscapeScreen(
+                          escapeRoomId: escapeRoom.id,
+                          escTitle: escapeRoom.title,
+                          escDescripcion: escapeRoom.description,
+                          participationId: participation.id,
+                          startDate: participation.startDate,
+                          endDate: participation.endDate,
+                        ),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
