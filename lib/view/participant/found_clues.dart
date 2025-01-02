@@ -3,7 +3,7 @@ import'../../controller/participant/game_controller.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: CluesScreen(cluesIds: [],escapeRoomId: 0),
+    home: CluesScreen(cluesIds: [],escapeRoomId: 0, participationId: 0),
     theme: ThemeData(
       fontFamily: 'Roboto',
     ),
@@ -15,11 +15,13 @@ class CluesScreen extends StatelessWidget {
   final GameController _controllerC = GameController();
   final List<int> cluesIds;  // Recibe la lista de IDs de pistas
   final int escapeRoomId; // Recibe el escapeRoomId
+  final int participationId;
   // Constructor que recibe cluesIds y escapeRoomId
   CluesScreen({
     Key? key,
     required this.cluesIds,
     required this.escapeRoomId,
+    required this.participationId,
   }) : super(key: key);
 
   
@@ -44,7 +46,7 @@ class CluesScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           // Para cada clueId en cluesIds -> obtiene la pista con getClue
           return FutureBuilder<Clue>(
-            future: _controllerC.getClue(cluesIds[index], escapeRoomId),
+            future: _controllerC.getClue(cluesIds[index], escapeRoomId, participationId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator()); // SIMULA CARGA
