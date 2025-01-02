@@ -75,8 +75,9 @@ class ParticipateScreen extends StatelessWidget {
                       onPressed: () {
                         int Id= int.parse(id);
                         Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => GameEscapeScreen(escapeRoomId: Id,escTitle: escapeRoom.title, escDescripcion: escapeRoom.description),
-                        )); // sacarlo del juego y redirigir a la pagina de participacion por si quiere jugar otra vez
+                            builder: (context) => GameEscapeScreen(escapeRoomId: Id,escTitle: escapeRoom.title, escDescripcion: escapeRoom.description, participationId: participation.id, startDate: participation.startDate, endDate: participation.endDate),
+                            // pasar el id de participation, startDate y endDate para el temporizador del juego
+                        ));
                       },
                     ),
                   ),
