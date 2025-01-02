@@ -4,7 +4,7 @@ import '../../controller/participant/participe_escape_controller.dart';
 import '../widgets/widgets.dart';
 import 'dart:convert';
 import '../../domain/escape_rooms/participation.dart';
-
+import 'game_escape.dart';
 void main() {
   runApp(MaterialApp(
     home: ParticipateScreen(id: ''),
@@ -122,7 +122,7 @@ class ParticipateScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildParticipationList(List<Participation>? participations) {
+  List<Widget> _buildParticipationList(List<Participation>? participations, String escTitle, ) {
     if (participations == null || participations.isEmpty) {
       return [
         const Text(
@@ -198,7 +198,7 @@ class ParticipateScreen extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    print('Seleccionado participación ID: ${participation.id}');
+                    GameEscapeScreen(participationId: participation.id,escTitle:escapeRoom.title,)
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
