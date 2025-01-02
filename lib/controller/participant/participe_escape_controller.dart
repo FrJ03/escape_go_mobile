@@ -7,36 +7,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ParticipateEscController {
   final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
   Future<EscapeRoom> getEscapeRoomInfoById(String id) async {
-    //una funcion para devolver el escape_room con toda su info y luego mostrarlo en el view
-
     final token = await _getToken();
     if (token == null) {
-      throw Exception(
-          'No se encontró un token válido. Inicia sesión nuevamente.');
+      throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
     }
 
-
-    final url = Uri.parse(
-        '$baseUrl/escaperoom/participant/info/$id'); //URL endpoint getInfo APIparticipant
-
+    final url = Uri.parse('$baseUrl/escaperoom/participant/info/$id');
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': token, // Token para autenticación
+      'Authorization': token,
     };
 
     final response = await http.get(url, headers: headers);
 
-    if (response.statusCode ==
-        200) { //si se obtiene correctamente lo retornamos a la vista para mostrar la info
-
+    if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      final escapeRoom = EscapeRoom.fromJson(json);
-
-      return escapeRoom;
-    }
-    else {
-      return Future.error(
-          'Error<${response.statusCode}>: getEscapeRoomInfoById');
+      if (json['escape_room'] == null) {
+        throw Exception('Datos del escape room no encontrados.');
+      }
+      return EscapeRoom.fromJson(json);
+    } else {
+      throw Exception('Error<${response.statusCode}>: ${response.body}');
     }
   }
 

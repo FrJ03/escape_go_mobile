@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../domain/escape_rooms/escape_room.dart';
 import '../../controller/participant/participe_escape_controller.dart';
 import '../widgets/widgets.dart';
-import 'game_escape.dart';
 import 'dart:convert';
+import '../../domain/escape_rooms/participation.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -28,8 +28,9 @@ class ParticipateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Participar Escape',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-      ),
+        title: const Text('Participar Escape',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+        ),
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
       ),
@@ -51,8 +52,10 @@ class ParticipateScreen extends StatelessWidget {
                 children: [
                   _buildInfoCard('Descripción', escapeRoom.description),
                   _buildInfoCard('Dificultad', '${escapeRoom.difficulty}'),
-                  _buildInfoCard('Precio', '${escapeRoom.price.toStringAsFixed(2)}€'),
-                  _buildInfoCard('Duración máxima de la sesión', '${escapeRoom.maxSessionDuration} horas'),
+                  _buildInfoCard(
+                      'Precio', '${escapeRoom.price.toStringAsFixed(2)}€'),
+                  _buildInfoCard('Duración máxima de la sesión',
+                      '${escapeRoom.maxSessionDuration} horas'),
                   const SizedBox(height: 16.0),
                   const Text(
                     'Información de Ubicación',
@@ -66,28 +69,24 @@ class ParticipateScreen extends StatelessWidget {
                   _buildInfoCard('País', escapeRoom.location.country),
                   _buildInfoCard('Ciudad', escapeRoom.location.city),
                   _buildInfoCard('Calle', escapeRoom.location.street),
-                  Center(
-                    child:
-                    CustomButton(
-                      key: Key('start_button'),
-                      value: 'Iniciar escape',
-                      color: Color(0xFFA2DAF1),
-                      onPressed: () {
-                        int Id= int.parse(id);
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => GameEscapeScreen(escapeRoomId: Id,escTitle: escapeRoom.title, escDescripcion: escapeRoom.description, participationId: participation.id, startDate: participation.startDate, endDate: participation.endDate),
-                            // pasar el id de participation, startDate y endDate para el temporizador del juego
-                        ));
-                      },
+                  const SizedBox(height: 16.0),
+                  const Text(
+                    'Participaciones',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.black87,
                     ),
                   ),
+                  const SizedBox(height: 8.0),
+                  ..._buildParticipationList(escapeRoom.participations),
+
                 ],
               ),
             );
           }
         },
       ),
-
     );
   }
 
@@ -121,5 +120,104 @@ class ParticipateScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildParticipationList(List<Participation>? participations) {
+    if (participations == null || participations.isEmpty) {
+      return [
+        const Text(
+          'No hay participaciones registradas.',
+          style: TextStyle(color: Colors.black54),
+        ),
+      ];
+    }
+
+    return participations.map((participation) {
+      return Card(
+        elevation: 3,
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ID
+              Row(
+                children: [
+                  const Icon(Icons.confirmation_number, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  Text(
+                    'ID: ${participation.id}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Fecha de inicio
+              Row(
+                children: [
+                  const Icon(Icons.calendar_today, color: Colors.green),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Inicio: ${participation.startDate}',
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // Fecha de fin
+              Row(
+                children: [
+                  const Icon(Icons.access_time, color: Colors.orange),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Fin: ${participation.endDate}',
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // Puntos
+              Row(
+                children: [
+                  const Icon(Icons.score, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Puntos: ${participation.points ?? 'Sin datos'}',
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Botón de acción
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    print('Seleccionado participación ID: ${participation.id}');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: const Color(0xFFA2DAF1),
+                  ),
+                  child: const Text(
+                    'Seleccionar',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 }

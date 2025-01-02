@@ -1,43 +1,25 @@
-import 'package:escape_go_mobile/domain/escape_rooms/escape_room.dart';
 
-class Participation{
-  final int _id;
-  final EscapeRoom _escapeRoom;
-  final _startDate;
-  final _endDate;
-  final int _points;
+class Participation {
+  final int id;
+  final DateTime startDate;
+  final DateTime endDate;
+  final int? points; // Acepta valores nulos
 
-  const Participation(
-      this._id,
-      this._escapeRoom,
-      this._startDate,
-      this._endDate,
-      this._points
-      );
+  Participation({
+    required this.id,
+    required this.startDate,
+    required this.endDate,
+    this.points,
+  });
 
-  factory Participation.fromJson(Map<String, dynamic> json){
-    return switch (json) {
-      {
-      'id': int id,
-      'escape_room': Map<String, dynamic> escapeRoom,
-      'start_date': String startDate,
-      'end_date': String endDate,
-      'points': int points
-      } =>
-          Participation(
-              id,
-              EscapeRoom.fromJson(escapeRoom),
-              startDate,
-              endDate,
-              points
-          ),
-      _ => throw const FormatException('Failed to load participation.'),
-    };
+  factory Participation.fromJson(Map<String, dynamic> json) {
+    return Participation(
+      id: json['id'] as int,
+      startDate: DateTime.parse(json['start_date'] as String),
+      endDate: DateTime.parse(json['end_date'] as String),
+      points: json['points'] != null && json['points'] != 'undefined'
+          ? json['points'] as int
+          : null, // Maneja `undefined` o valores nulos
+    );
   }
-
-  int get id => _id;
-  EscapeRoom get title => _escapeRoom;
-  String get description => _startDate;
-  String get solution => _endDate;
-  int get difficulty => _points;
 }

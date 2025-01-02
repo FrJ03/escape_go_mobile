@@ -1,3 +1,4 @@
+import 'package:escape_go_mobile/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../controller/admin/addParticipationController.dart'; // Asegúrate de importar tu controlador
@@ -20,24 +21,41 @@ class _AddParticipationScreenState extends State<AddParticipationScreen> {
   final AddParticipationController _controller = AddParticipationController(); // Instanciamos el controlador
 
   void _selectDate(BuildContext context, bool isStart) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
     );
-    if (picked != null) {
-      setState(() {
-        if (isStart) {
-          _startDate = picked;
-          _startDateController.text = DateFormat('yyyy-MM-dd').format(picked);
-        } else {
-          _endDate = picked;
-          _endDateController.text = DateFormat('yyyy-MM-dd').format(picked);
-        }
-      });
+
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+
+      if (pickedTime != null) {
+        final DateTime fullDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
+        setState(() {
+          if (isStart) {
+            _startDate = fullDateTime;
+            _startDateController.text = DateFormat('yyyy-MM-dd HH:mm').format(fullDateTime);
+          } else {
+            _endDate = fullDateTime;
+            _endDateController.text = DateFormat('yyyy-MM-dd HH:mm').format(fullDateTime);
+          }
+        });
+      }
     }
   }
+
 
   void _createParticipation() async {
     if (_startDate == null || _endDate == null) {
@@ -104,10 +122,14 @@ class _AddParticipationScreenState extends State<AddParticipationScreen> {
               onTap: () => _selectDate(context, false),
             ),
             SizedBox(height: 16),
-            ElevatedButton(
+            Center(child:
+            CustomButton(
+              key: Key('create_part_button'),
+              color: Color(0xFFA2DAF1),
               onPressed: _createParticipation,
-              child: Text('Crear Participación'),
-            ),
+              value: 'Crear Participación',
+            ),)
+
           ],
         ),
       ),

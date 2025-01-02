@@ -3,6 +3,7 @@ import'../../controller/admin/escape_room_controller.dart';
 import'../../controller/admin/deleteEscController.dart';
 import 'package:escape_go_mobile/domain/escape_rooms/escape_room_list_item.dart';
 import '../widgets/widgets.dart';
+import 'addParticipationView.dart';
 import'modify_escape.dart';
 //Vista para listar todos los Escape Rooms por distancia en el participante
 
@@ -124,6 +125,16 @@ class EscapeRoomRow extends StatelessWidget {
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
                         _confirmDelete(context, escapeRoom.id); //FALLO escapeRoom.id siempre manda 1 
+                      },
+
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add, color: Colors.green),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddParticipationScreen(id: escapeRoom.id.toString())),
+                        );
                       },
                     ),
                   ],

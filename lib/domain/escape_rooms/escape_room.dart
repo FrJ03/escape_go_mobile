@@ -1,14 +1,16 @@
 import 'location.dart';
+import 'participation.dart'; // Importa la clase Participation si no está ya importada.
 
-class EscapeRoom{
-  final _id;
-  final _title;
-  final _description;
-  final _solution;
-  final _difficulty;
-  final _price;
-  final _maxSessionDuration;
-  final _location;
+class EscapeRoom {
+  final int _id;
+  final String _title;
+  final String _description;
+  final String _solution;
+  final int _difficulty;
+  final int _price;
+  final int _maxSessionDuration;
+  final Location _location;
+  final List<Participation> _participations;
 
   const EscapeRoom(
       this._id,
@@ -18,8 +20,9 @@ class EscapeRoom{
       this._difficulty,
       this._price,
       this._maxSessionDuration,
-      this._location
-  );
+      this._location,
+      this._participations,
+      );
 
   factory EscapeRoom.fromJson(Map<String, dynamic> json) {
     try {
@@ -28,16 +31,22 @@ class EscapeRoom{
         escapeRoomJson['id'] as int,
         escapeRoomJson['title'] as String,
         escapeRoomJson['description'] as String,
-        escapeRoomJson['solution'] ?? '', // Opcional
+        '', // Omite el campo `solution` ya que no está en el JSON
         escapeRoomJson['difficulty'] as int,
         escapeRoomJson['price'] as int,
         escapeRoomJson['maxSessionDuration'] as int,
         Location.fromJson(escapeRoomJson['location'] as Map<String, dynamic>),
+        (json['participations'] as List<dynamic>?)
+            ?.map((e) => Participation.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+            [], // Lista vacía si `participations` es nulo
       );
     } catch (e) {
       throw FormatException('Failed to load escape room: $e');
     }
   }
+
+
 
   int get id => _id;
   String get title => _title;
@@ -47,4 +56,5 @@ class EscapeRoom{
   int get price => _price;
   int get maxSessionDuration => _maxSessionDuration;
   Location get location => _location;
+  List<Participation> get participations => _participations;
 }

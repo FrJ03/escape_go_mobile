@@ -23,9 +23,10 @@ class AddParticipationController {
 
     final Map<String, String> body = {
       'escape_room_id': id,
-      'start_date': DateFormat('yyyy-MM-dd').format(startDate),
-      'end_date': DateFormat('yyyy-MM-dd').format(endDate),
+      'start_date': startDate.toIso8601String(), // Formato ISO 8601
+      'end_date': endDate.toIso8601String(),
     };
+
 
     try {
       final response = await http.post(
