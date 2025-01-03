@@ -23,7 +23,8 @@ class GameEscapeScreen extends StatefulWidget {
 	final int participationId;
 	final DateTime startDate;
 	final DateTime endDate;
-  const GameEscapeScreen({
+	Timer timer = new Timer(const Duration(minutes: 20), () => {});
+  GameEscapeScreen({
     Key? key,
     required this.escapeRoomId,
     required this.escTitle,
@@ -50,6 +51,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 	late String escTitle;
 	late Duration remainingTime; // tiempo que queda para resolver el juego
 	late Timer timer; // temporizador de la vista
+	late Timer nextClueTimer;
 
 // en cuanto se inicia la vista se pide la primera pista para comenzar el juego
 	@override
@@ -64,6 +66,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 		remainingTime = widget.endDate.difference(DateTime.now());
 		_startTimer();
 		_initializeDesc();
+		nextClueTimer = widget.timer;
 	}
 
 	// Pone la descripcion en el cuadro de texto
@@ -167,44 +170,67 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 											value: 'OBTÉN UNA PISTA',
 											color: Color(0xFFA2DAF1),
 											onPressed: () async {
-												try {
-													// Llama al backend con getNextClue
-													Clue ?nextClue = await controller.getNextClue(context,
-															cluesIds, escapeRoomId, participationId);
-													print(nextClue);
-													if(nextClue!=null) {
-														// actualiza la lista con la nueva pista
-														setState(() {
-															cluesIds.add(nextClue.id);
-															currentClueText = nextClue.info;
-														});
-														// Muestra el pop-up con la pista
-														showDialog(
-															context: context,
-															builder: (BuildContext context) {
-																return AlertDialog(
-																	title: Text('Pista: ${nextClue.title}'),
-																	content: Text(nextClue.info),
-																	actions: [
-																		TextButton(
-																			onPressed: () {
-																				Navigator.of(context).pop();
-																			},
-																			child: Text('Cerrar'),
-																		),
-																	],
-																);
-															},
+												if(nextClueTimer.isActive){
+													showDialog(
+														context: context,
+														builder: (BuildContext context) {
+															return AlertDialog(
+																title: Text('Error'),
+																content: Text('No se puede solicitar una pista.\nTemporizador: ${nextClueTimer.toString()}'),
+																actions: [
+																	TextButton(
+																		onPressed: () {
+																			Navigator.of(context).pop();
+																		},
+																		child: Text('Cerrar'),
+																	),
+																],
+															);
+														},
 
-														);
-													}
-												} catch (e) {
-													ScaffoldMessenger.of(context).showSnackBar(
-														SnackBar(
-															content: Text("Hubo un error: ${e.toString()}"),
-														),
 													);
-												} // Fin del error
+												}
+												else{
+													try {
+														// Llama al backend con getNextClue
+														Clue ?nextClue = await controller.getNextClue(context,
+																cluesIds, escapeRoomId, participationId);
+														print(nextClue);
+														if(nextClue!=null) {
+															// actualiza la lista con la nueva pista
+															setState(() {
+																cluesIds.add(nextClue.id);
+																currentClueText = nextClue.info;
+															});
+															// Muestra el pop-up con la pista
+															showDialog(
+																context: context,
+																builder: (BuildContext context) {
+																	return AlertDialog(
+																		title: Text('Pista: ${nextClue.title}'),
+																		content: Text(nextClue.info),
+																		actions: [
+																			TextButton(
+																				onPressed: () {
+																					Navigator.of(context).pop();
+																				},
+																				child: Text('Cerrar'),
+																			),
+																		],
+																	);
+																},
+
+															);
+														}
+													} catch (e) {
+														ScaffoldMessenger.of(context).showSnackBar(
+															SnackBar(
+																content: Text("Hubo un error: ${e.toString()}"),
+															),
+														);
+													} // Fin del error
+												}
+
 											}, // Fin de onPressed
 										),
 										SizedBox(height: 16),
@@ -403,6 +429,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 														ScaffoldMessenger.of(context).showSnackBar(
 															SnackBar(content: Text("Pista encontrada: ${clue.title}")),
 														);
+														nextClueTimer = new Timer(Duration(minutes: 20), () => {});
 													} catch (e) {
 														await NfcManager.instance.stopSession(errorMessage: e.toString());
 														ScaffoldMessenger.of(context).showSnackBar(
