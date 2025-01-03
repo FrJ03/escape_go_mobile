@@ -3,6 +3,7 @@ import '../widgets/widgets.dart';
 import './participe_escape.dart';
 import 'found_clues.dart';
 import '../../controller/participant/game_controller.dart';
+import 'escaperoomsviewParticipant.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:async';
 
@@ -100,7 +101,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 							onPressed: () {
 								Navigator.of(context).pop();
 								cluesIds.clear();
-								Navigator.push(
+								Navigator.pushReplacement(
 									context,
 									MaterialPageRoute(
 										builder: (context) => ParticipateScreen(id: escapeRoomId.toString()),
@@ -123,6 +124,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 					escTitle,
 					style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
 				),
+				automaticallyImplyLeading: false,
 				backgroundColor: Color(0xFFA2DAF1),
 				centerTitle: true,
 			),
@@ -251,9 +253,8 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 																			if (solution.isNotEmpty) {
 																				try {
 																					// obtiene los puntos
-																					// final points = await controller.solve(solution, escapeRoomId, participationId); // de donde saco participationId ???
+																					final points = await controller.solve(solution, escapeRoomId, participationId); // de donde saco participationId ???
 																					// VALOR DE PRUEBA PARA VER SI FUNCIONA ??
-																					final points = 5;
 																					// pop up con puntos
 																					showDialog(
 																						context: context,
@@ -272,13 +273,11 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 																										onPressed: () {
 																											Navigator.of(context)
 																													.pop(); // cerrar dialogo
-																											Navigator.push(context,
+																											Navigator.pushReplacement(context,
 																												MaterialPageRoute(
 																														builder: (
 																																context) =>
-																																ParticipateScreen(
-																																		id: escapeRoomId
-																																				.toString())),
+																														EscapeRoomsScreen()),
 																											); // sacarlo del juego y redirigir a la pagina de participacion por si quiere jugar otra vez
 																										},
 																										child: Text('SALIR',
@@ -455,7 +454,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 									});
 									// cierra el dialog y redirige a la página de participate para salir
 									Navigator.pop(context);
-									Navigator.push(context, MaterialPageRoute(
+									Navigator.pushReplacement(context, MaterialPageRoute(
 											builder: (context) =>
 													ParticipateScreen(id: escapeRoomId.toString())
 									));

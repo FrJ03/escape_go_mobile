@@ -23,6 +23,7 @@ class PanelParticipantScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         backgroundColor: Color(0xFFA2DAF1),
+        automaticallyImplyLeading: false,
         centerTitle: true,
       ),
       body: Container(

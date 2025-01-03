@@ -24,6 +24,7 @@ class PanelScreen extends StatelessWidget {
         ),
         backgroundColor: Color(0xFFA2DAF1),
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         width: double.infinity,
