@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../widgets/widgets.dart';
 import '../profileview.dart';
 import 'escaperoomsviewParticipant.dart';
-//import 'ranking_view.dart';
 void main() {
   runApp(MaterialApp(
     home: PanelParticipantScreen(),

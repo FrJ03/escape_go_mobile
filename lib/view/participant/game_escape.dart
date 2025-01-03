@@ -40,8 +40,7 @@ class GameEscapeScreen extends StatefulWidget {
 
 class _GameEscapeScreenState extends State<GameEscapeScreen> {
 	final GameController controller = GameController();
-	List<int> cluesIds = [
-	]; // Lista para almacenar los IDs de las pistas encontradas
+	List<int> cluesIds = []; // Lista para almacenar los IDs de las pistas encontradas
 	late int escapeRoomId; // toma el id para conseguir las pistas del escape room correcto
 	String currentClueText = ''; // vamos a rellenar esto con la primera pista
 	late int participationId;
@@ -170,31 +169,35 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 											onPressed: () async {
 												try {
 													// Llama al backend con getNextClue
-													Clue nextClue = await controller.getNextClue(
+													Clue ?nextClue = await controller.getNextClue(context,
 															cluesIds, escapeRoomId, participationId);
-													// actualiza la lista con la nueva pista
-													setState(() {
-														cluesIds.add(nextClue.id);
-														currentClueText = nextClue.info;
-													});
-													// Muestra el pop-up con la pista
-													showDialog(
-														context: context,
-														builder: (BuildContext context) {
-															return AlertDialog(
-																title: Text('Pista: ${nextClue.title}'),
-																content: Text(nextClue.info),
-																actions: [
-																	TextButton(
-																		onPressed: () {
-																			Navigator.of(context).pop();
-																		},
-																		child: Text('Cerrar'),
-																	),
-																],
-															);
-														},
-													);
+													print(nextClue);
+													if(nextClue!=null) {
+														// actualiza la lista con la nueva pista
+														setState(() {
+															cluesIds.add(nextClue.id);
+															currentClueText = nextClue.info;
+														});
+														// Muestra el pop-up con la pista
+														showDialog(
+															context: context,
+															builder: (BuildContext context) {
+																return AlertDialog(
+																	title: Text('Pista: ${nextClue.title}'),
+																	content: Text(nextClue.info),
+																	actions: [
+																		TextButton(
+																			onPressed: () {
+																				Navigator.of(context).pop();
+																			},
+																			child: Text('Cerrar'),
+																		),
+																	],
+																);
+															},
+
+														);
+													}
 												} catch (e) {
 													ScaffoldMessenger.of(context).showSnackBar(
 														SnackBar(
@@ -253,9 +256,8 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 																			if (solution.isNotEmpty) {
 																				try {
 																					// obtiene los puntos
-																					final points = await controller.solve(solution, escapeRoomId, participationId); // de donde saco participationId ???
-																					// VALOR DE PRUEBA PARA VER SI FUNCIONA ??
-																					// pop up con puntos
+																					final points = await controller.solve(solution, escapeRoomId, participationId);
+
 																					showDialog(
 																						context: context,
 																						builder: (BuildContext context) {
