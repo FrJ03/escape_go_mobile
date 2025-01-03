@@ -1,8 +1,11 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/material.dart';
 
 class GameController{
+  final String baseUrl = dotenv.env['BASEURL'] ?? 'NO BASEURL FOUND';
   Future<bool> register(String userEmail, int participationId, int escapeRoomId) async {
     final Object body = {
       'user_email': userEmail,
@@ -10,7 +13,7 @@ class GameController{
       'escape_room_id': escapeRoomId
     };
 
-    final response = await http.post(Uri.parse('http://192.168.0.15:3000/game/register'), body: body);
+    final response = await http.post(Uri.parse('$baseUrl/game/register'), body: body);
 
     if(response.statusCode == 200){
       return true;
@@ -21,7 +24,7 @@ class GameController{
   }
 
 // pide la siguiente pista del escape room
-  Future<Clue> getNextClue(List<int> cluesIds, int escapeRoomId, int participationId) async {
+  Future<Clue?> getNextClue(BuildContext context,List<int> cluesIds, int escapeRoomId, int participationId) async {
     try {
       // Obtener el token del usuario autenticado
       final token = await _getToken();
@@ -44,23 +47,28 @@ class GameController{
       // Realizar la solicitud POST y convertir a JSON
       final response = await http.post(url,headers: headers,body: jsonEncode(body),
       );
-
+      print(response.body);
       switch (response.statusCode) {
         case 200:
           // Decodifica el cuerpo de la respuesta porque la solicitud ha sido correcta
           final json = jsonDecode(response.body);
-          return Clue.fromJson(json['clue'] as Map<String, dynamic>);
+          return Clue.fromJson(json as Map<String, dynamic>);
         case 400:
-          throw Exception('Error en solicitud: ${response.body}');
+          _showDialog(context,'Error','Error en solicitud: ${response.body}');
         case 401:
-          throw Exception('No eres admin.');
+          _showDialog(context, 'Error', 'No eres participante.');
+
         case 404:
-          throw Exception('Escape Room no existe.');
+          _showDialog(context, 'Error', 'Escape Room no existe.');
+        case 204:
+          _showDialog(context, 'Error', 'No hay más pistas que mostrar.');
+
+
         default:
-          throw Exception('Error inesperado: ${response.statusCode}');
+          _showDialog(context,'Error','Error inesperado: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Hubo un error de conexión: $e');
+      _showDialog(context,'Error','Hubo un error de conexión: $e');
     }
   }
 
@@ -94,13 +102,15 @@ class GameController{
         case 200:
           // CORRECTO
           final json = jsonDecode(response.body);
-          return Clue.fromJson(json['clue'] as Map<String, dynamic>);
+          return Clue.fromJson(json as Map<String, dynamic>);
         case 400:
           throw Exception('Error en solicitud: ${response.body}');
         case 401:
           throw Exception('No eres admin.');
         case 404:
           throw Exception('Escape Room no existe.');
+        case 204:
+          throw Exception('No hay más pistas que mostrar');
         default:
           throw Exception('Hubo un error inesperado: ${response.statusCode}');
       }
@@ -135,6 +145,7 @@ class GameController{
         final response = await http.post(url,headers: headers,body: jsonEncode(body),
         );
         // RESPUESTAS
+        print(response.body);
         switch (response.statusCode) {
           case 200:
             // CORRECTO
@@ -146,7 +157,7 @@ class GameController{
             throw Exception('No eres admin.');
           case 404:
             throw Exception('Escape Room no existe.');
-  	case 423:
+  	      case 423:
             throw Exception('Participacion no iniciada o finalizada.');
           default:
             throw Exception('Hubo un error inesperado: ${response.statusCode}');
@@ -155,6 +166,21 @@ class GameController{
         throw Exception('Hubo un error: $e');
       }
     }
+  void _showDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title, style: TextStyle(color: Color(0xFFFFA1A1), fontWeight: FontWeight.bold)),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
 
   
   /// Obtener el token almacenado
@@ -186,4 +212,6 @@ class Clue {
       info: json['info'] as String,
     );
   }
+
 }
+

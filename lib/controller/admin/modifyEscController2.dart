@@ -10,7 +10,7 @@ class EscapeRoomController {
     if (storyController.text.isNotEmpty && nameController.text.isNotEmpty ) {
       fragments.add({
         'info': storyController.text,
-        'name': nameController.text,
+        'title': nameController.text,
 
       });
       storyController.clear();
