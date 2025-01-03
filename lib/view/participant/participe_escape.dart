@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/escape_rooms/escape_room.dart';
 import '../../controller/participant/participe_escape_controller.dart';
-
 import '../../domain/escape_rooms/participation.dart';
 import 'game_escape.dart';
 
@@ -123,11 +122,9 @@ class ParticipateScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildParticipationList(
-      BuildContext context,
+  List<Widget> _buildParticipationList(BuildContext context,
       List<Participation>? participations,
-      EscapeRoom escapeRoom,
-      ) {
+      EscapeRoom escapeRoom,) {
     if (participations == null || participations.isEmpty) {
       return [
         const Text(
@@ -198,17 +195,19 @@ class ParticipateScreen extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
+                    controller.registerCaller(escapeRoom.id.toString(), participation.id.toString());
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GameEscapeScreen(
-                          escapeRoomId: escapeRoom.id,
-                          escTitle: escapeRoom.title,
-                          escDescripcion: escapeRoom.description,
-                          participationId: participation.id,
-                          startDate: participation.startDate,
-                          endDate: participation.endDate,
-                        ),
+                        builder: (context) =>
+                            GameEscapeScreen(
+                              escapeRoomId: escapeRoom.id,
+                              escTitle: escapeRoom.title,
+                              escDescripcion: escapeRoom.description,
+                              participationId: participation.id,
+                              startDate: participation.startDate,
+                              endDate: participation.endDate,
+                            ),
                       ),
                     );
                   },

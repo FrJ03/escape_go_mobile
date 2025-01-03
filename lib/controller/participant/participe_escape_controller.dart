@@ -31,6 +31,28 @@ class ParticipateEscController {
     }
   }
 
+  Future <void> registerCaller(String escaperoomId, String participationId) async{
+
+    final token = await _getToken();
+    if (token == null) {
+      throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
+    }
+
+    final url = Uri.parse('$baseUrl/game/register'); //endpoint donde se crea el usersparticipation
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    };
+
+    final body = {
+      'escape_room_id': escaperoomId,
+      'participation_id': participationId
+    };
+
+    final response = await http.post(url, body: jsonEncode(body), headers: headers);
+
+  }
+
 
   Future <void> participe(BuildContext context) async {
     _showDialog(
