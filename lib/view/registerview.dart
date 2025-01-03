@@ -119,7 +119,7 @@ class RegisterScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 100),
+              SizedBox(height: 75),
               Center(
                 child: CustomButton(
                   key: Key('register_button'),
