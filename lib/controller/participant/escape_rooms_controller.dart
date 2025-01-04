@@ -11,10 +11,9 @@ class EscapeRoomsController{
 
   Future<List<EscapeRoomListItem>> getEscapeRooms() async {
     try {
-      //Position position = await _getLocation();
-      //String coordinates = _positionToString(position);
+      Position position = await _getLocation();
+      String coordinates = _positionToString(position);
       //Tenemos que saber parsear las coordenadas
-      String coordinates= "0º 30'30\" N, 0º 30'30\" N";
       final token = await _getToken(); // Recupera el token almacenado
       if (token == null) {
         throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
