@@ -58,7 +58,7 @@ class EscapeRoomsController{
 
 
   Future<(EscapeRoom, List<Participation>)> getEscapeRoom(int id) async {
-    http.Response response = await http.get(Uri.parse('http://192.168.0.15:3000/escaperoom/info?id=$id'));
+    http.Response response = await http.get(Uri.parse('$baseUrl/escaperoom/info?id=$id'));
 
     if(response.statusCode == 200){
       final escapeRoom = EscapeRoom.fromJson(jsonDecode(response.body).escape_room as Map<String, dynamic>);

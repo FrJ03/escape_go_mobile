@@ -56,7 +56,7 @@ class ProfileController {
     print(body);
     final headers = {'Authorization': token,
       'Content-Type': 'application/json',};
-    final response = await http.post(Uri.parse('http://192.168.0.15:3000/account/delete'),headers: headers,body: body);
+    final response = await http.post(Uri.parse('$baseUrl/account/delete'),headers: headers,body: body);
 
       if (response.statusCode == 200) {
         return true;

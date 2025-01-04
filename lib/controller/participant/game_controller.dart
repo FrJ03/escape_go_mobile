@@ -82,7 +82,7 @@ class GameController{
         throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
       }
       // ENDPOINT
-      final url = Uri.parse('http://192.168.0.15:3000/game/clue/$clueId');
+      final url = Uri.parse('$baseUrl/game/clue/$clueId');
       // Cuerpo de la solicitud
       final Object body = {
         'clue_id': clueId,
@@ -129,7 +129,7 @@ class GameController{
           throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
         }
         // ENDPOINT
-        final url = Uri.parse('http://192.168.0.15:3000/game/solve');
+        final url = Uri.parse('$baseUrl/game/solve');
         // Cuerpo de la solicitud
         final Object body = {
           'solution': solution,

@@ -37,7 +37,7 @@ class EscapeRoomController{
     };
 
     final response = await http.post(
-      Uri.parse('http://192.168.18.72:3000/escaperoom/create'),
+      Uri.parse('$baseUrl/escaperoom/create'),
       headers: headers,
       body: jsonEncode(body),
     );
@@ -50,7 +50,7 @@ class EscapeRoomController{
   }
 
   Future<bool> deleteEscapeRoom(int id) async {
-    final response = await http.delete(Uri.parse('http://192.168.18.72:3000/escaperoom/admin/create?id=$id'));
+    final response = await http.delete(Uri.parse('$baseUrl/escaperoom/admin/create?id=$id'));
 
     if(response.statusCode == 200){
       return true;
