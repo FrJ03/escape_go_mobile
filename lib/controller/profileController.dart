@@ -101,7 +101,7 @@ class ProfileController {
       };
 
       final response = await http.put(
-        Uri.parse('http://192.168.0.15:3000/profile/update'),
+        Uri.parse('$baseUrl/profile/update'),
         headers: headers,
         body: body,
       );
