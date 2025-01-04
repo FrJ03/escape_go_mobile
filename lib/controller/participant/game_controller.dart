@@ -32,7 +32,7 @@ class GameController{
         throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');
       }
       // URL del endpoint
-      final url = Uri.parse('http://192.168.0.15:3000/game/clue');
+      final url = Uri.parse('$baseUrl/game/clue');
       // Cuerpo de la solicitud
       final Object body = {
         'clues_ids': cluesIds,
