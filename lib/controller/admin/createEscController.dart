@@ -74,6 +74,7 @@ class CreateEscController {
         'coordinates': coordinates,
         'info': additionalInfo,
       },
+      'clues':''
     };
 
 
