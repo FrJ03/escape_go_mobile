@@ -75,7 +75,7 @@ class ProfileScreen extends StatelessWidget {
 					buildProfileDetail('Role:', user.role),
 					SizedBox(height: 30),
 					buildProfileDetail('Puntos:', user.points.toString()),
-					SizedBox(height: 100),
+					SizedBox(height: 50),
 					Center(
 						child: Column(
 							children: [
