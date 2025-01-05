@@ -37,12 +37,9 @@ class RegisterController {
           MaterialPageRoute(builder: (context) => LoginScreen()),
         );
 
-      } else if (response.statusCode == 409) {
+      } else if (response.statusCode == 400) {
         // Conflicto (correo o usuario ya existente)
         _showDialog(context, 'Error', 'El correo o el nombre de usuario ya existe.');
-      } else {
-        // Otro error
-        _showDialog(context, 'Error', 'Error al registrar usuario: ${response.body}');
       }
     } catch (e) {
       _showDialog(context, 'Error', 'Error al conectar con el servidor: $e');

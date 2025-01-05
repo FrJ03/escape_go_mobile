@@ -53,12 +53,12 @@ class LoginController {
         } else {
           _showDialog(context, 'Error', 'No se recibió un token válido.');
         }
-      } else if (response.statusCode == 401) {
+      } else if (response.statusCode == 404) {
         // Credenciales incorrectas
         _showDialog(context, 'Error', 'Credenciales incorrectas. Inténtalo de nuevo.');
-      } else {
-        // Otro error
-        _showDialog(context, 'Error', 'Error al iniciar sesión: ${response.body}');
+      } else if (response.statusCode == 400) {
+        // Credenciales incorrectas
+        _showDialog(context, 'Error', 'Error en la request');
       }
     } catch (e) {
       _showDialog(context, 'Error', 'Error al conectar con el servidor: $e');
