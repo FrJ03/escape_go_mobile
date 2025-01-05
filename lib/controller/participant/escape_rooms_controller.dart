@@ -81,11 +81,13 @@ class EscapeRoomsController{
   String _positionToString(Position position){
     double pos_lat = (position.latitude > 0) ? position.latitude : 0 - position.latitude;
     double pos_lon = (position.longitude > 0) ? position.longitude : 0 - position.longitude;
+    
+    String quotes = utf8.decode([0x22]);
 
     String latDir = (position.latitude > 0) ? 'N' : 'S';
     String longDir = (position.longitude > 0) ? 'E' : 'W';
 
-    String str = "${pos_lat.toInt()}º ${_getMinutes(pos_lat)}'${_getSeconds(pos_lat)}\" $latDir, ${pos_lon.toInt()}º ${_getMinutes(pos_lon)}'${_getSeconds(pos_lon)}\" $longDir";
+    String str = "${pos_lat.toInt()}º ${_getMinutes(pos_lat)}'${_getSeconds(pos_lat)}${quotes} $latDir, ${pos_lon.toInt()}º ${_getMinutes(pos_lon)}'${_getSeconds(pos_lon)}${quotes} $longDir";
 
     return str;
   }
