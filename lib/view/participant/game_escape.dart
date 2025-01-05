@@ -410,7 +410,8 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 														
 														// Extrae el ID de la pista que está guardado en el tag
 														final data = utf8.decode(ndef.cachedMessage!.records.first.payload);
-        													final clueId = int.parse(data.trim());
+														final num = data.replaceAll("en", "");
+        													final clueId = int.parse(num.trim());
 														// Obtiene la pista entera
 														Clue clue = await controller.getClue(clueId, escapeRoomId, participationId);
 														// Actualiza la pista actual
