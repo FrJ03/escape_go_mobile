@@ -79,11 +79,13 @@ class EscapeRoomsController{
     }
   }
   String _positionToString(Position position){
+    double pos_lat = (position.latitude > 0) ? position.latitude : 0 - position.latitude;
+    double pos_lon = (position.longitude > 0) ? position.longitude : 0 - position.longitude;
+
     String latDir = (position.latitude > 0) ? 'N' : 'S';
     String longDir = (position.longitude > 0) ? 'E' : 'W';
-    int latDegree = (position.latitude > 0) ? position.latitude.toInt() : 0 - position.latitude.toInt();
-    int longDegree = (position.longitude > 0) ? position.longitude.toInt() : 0 - position.longitude.toInt();
-    String str = "${latDegree}º ${_getMinutes(position.latitude)}'${_getSeconds(position.latitude)}\" $latDir, ${longDegree}º ${_getMinutes(position.longitude)}'${_getSeconds(position.longitude)}\" $longDir";
+
+    String str = "${pos_lat.toInt()}º ${_getMinutes(pos_lat)}'${_getSeconds(pos_lat)}\" $latDir, ${pos_lon.toInt()}º ${_getMinutes(pos_lon)}'${_getSeconds(pos_lon)}\" $longDir";
 
     return str;
   }
