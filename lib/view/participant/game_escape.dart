@@ -6,6 +6,7 @@ import '../../controller/participant/game_controller.dart';
 import 'escaperoomsviewParticipant.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:async';
+import 'dart:convert';
 
 void main() {
   runApp(MaterialApp(
