@@ -407,13 +407,18 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 														if (ndef == null || ndef.cachedMessage == null) {
 															throw Exception("El tag NFC no contiene datos válidos.");
 														}
-														
+
 														// Extrae el ID de la pista que está guardado en el tag
-														final data = utf8.decode(ndef.cachedMessage!.records.first.payload);
-														final num = data.replaceAll("en", "");
-        													final clueId = int.parse(num.trim());
+														String payload = String.fromCharCodes(ndef.cachedMessage!.records.first.payload);
+														String content = payload.substring(payload.indexOf('en') + 2);
+														int ? parsedInt = int.tryParse(content);
+														if (parsedInt == null){
+															throw Exception("Error valor no válido $content");
+														}
+
+
 														// Obtiene la pista entera
-														Clue clue = await controller.getClue(clueId, escapeRoomId, participationId);
+														Clue clue = await controller.getClue(parsedInt, escapeRoomId, participationId);
 														// Actualiza la pista actual
 														setState(() {
 															currentClueText = clue.info;
