@@ -403,19 +403,13 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 													try {
 														// Extrae el contenido del tag NFC
 														final ndef = Ndef.from(tag);
-														if (ndef == null) {
-															throw Exception("El tag NFC no es compatible con NDEF.");
+														if (ndef == null || ndef.cachedMessage == null) {
+															throw Exception("El tag NFC no contiene datos válidos.");
 														}
-
-														// Obtener el mensaje
-														final ndefMessage = ndef.cachedMessage;
-														if (ndefMessage == null || ndefMessage.records.isEmpty) {
-															throw Exception("El tag contiene datos inválidos.");
-														}
+														
 														// Extrae el ID de la pista que está guardado en el tag
-														final clueId = int.parse(
-															String.fromCharCodes(ndefMessage.records.first.payload),
-														);
+														final data = utf8.decode(ndef.cachedMessage!.records.first.payload);
+        													final clueId = int.parse(data.trim());
 														// Obtiene la pista entera
 														Clue clue = await controller.getClue(clueId, escapeRoomId, participationId);
 														// Actualiza la pista actual
