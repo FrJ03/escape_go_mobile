@@ -3,6 +3,14 @@ import '../widgets/widgets.dart';
 import '../../controller/admin/modifyEscController.dart';
 import '../../view/admin/modify_escape2.dart';
 
+void main() {
+  runApp(MaterialApp(
+    home: ModifyEscapeScreen(id: ''),
+    theme: ThemeData(
+      fontFamily: 'Roboto',
+    ),
+  ));
+}
 class ModifyEscapeScreen extends StatelessWidget {
   final String id;
   final ModifyEscapeController controller;

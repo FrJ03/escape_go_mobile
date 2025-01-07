@@ -19,11 +19,11 @@ void main() {
 		final errorDialog = find.text('Error');
     		expect(errorDialog, findsOneWidget);
 
-		final okButton = find.widgetWithTest(TextButton, 'OK');
+		final okButton = find.widgetWithText(TextButton, 'OK');
 		await tester.tap(okButton);
     		await tester.pumpAndSettle();
 
-		final page = find.text('Iniciar sesión')
+		final page = find.text('Iniciar sesión');
 		expect(page, findsOneWidget);
 		// sigue en la página de login, acceso restringido
   	});
@@ -47,11 +47,11 @@ void main() {
 		final errorDialog = find.text('Error');
     		expect(errorDialog, findsOneWidget);
 
-		final okButton = find.widgetWithTest(TextButton, 'OK');
+		final okButton = find.widgetWithText(TextButton, 'OK');
 		await tester.tap(okButton);
     		await tester.pumpAndSettle();
 
-		final page = find.text('Iniciar sesión')
+		final page = find.text('Iniciar sesión');
 		expect(page, findsOneWidget);
 		// sigue en la página de login, acceso restringido porque el usuario no está registrado
   	});
