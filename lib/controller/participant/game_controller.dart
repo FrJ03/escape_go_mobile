@@ -109,7 +109,7 @@ class GameController{
         case 401:
           _showDialog(context,'Error','No eres admin.');
         case 404:
-          _showDialog(context,'Error','Escape Room no existe.');
+          _showDialog(context,'Error','ID no correcto');
         case 204:
           _showDialog(context, 'Error','No hay más pistas que mostrar');
         default:

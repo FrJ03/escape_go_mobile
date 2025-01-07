@@ -51,6 +51,7 @@ class CreateEscController {
     int? difficulty = int.tryParse(level);
     double? parsedPrice = double.tryParse(price);
     int? maxSessionDuration = int.tryParse(duration);
+    final List<Map<String, String>> clues = [];
 
     if (difficulty == null || parsedPrice == null || maxSessionDuration == null) {
       _showDialog(context, 'Error',
@@ -74,7 +75,8 @@ class CreateEscController {
         'coordinates': coordinates,
         'info': additionalInfo,
       },
-      'clues':''
+      'clues': clues
+
     };
 
 
@@ -113,6 +115,7 @@ class CreateEscController {
 
       // Serializa el mapa a JSON
       final body = json.encode(data);
+      _showSuccessDialog(context, 'Éxito', body);
 
       final response = await http.post(
           url, headers: headers, body: body); // Realiza el request
