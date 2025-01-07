@@ -56,7 +56,7 @@ class StatisticsController {
         // Convierte el valor a entero si lo necesitas
         return (rate * 100); // Ejemplo: convierte 0.5 a 50 (porcentaje)
       } else {
-        return Future.error('Error<${response.statusCode}>: get Conversion Rate');
+        return Future.error('Error<${response.statusCode}>: get Growth Rate');
       }
     } catch (e) {
       throw Exception('Error de conexión: $e');
@@ -92,7 +92,7 @@ class StatisticsController {
 
         return interval;
       } else {
-        return Future.error('Error<${response.statusCode}>: get Conversion Rate');
+        return Future.error('Error<${response.statusCode}>: get Interval Session');
       }
     } catch (e) {
       throw Exception('Error de conexión: $e');

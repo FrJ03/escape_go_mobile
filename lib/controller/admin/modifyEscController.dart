@@ -48,7 +48,6 @@ class ModifyEscapeController {
       'price': price,
       'clues': clues,
     };
-    print(requestBody);
     final token = await _getToken();
     if(token == null){
       throw Exception('No se encontró un token válido. Inicia sesión nuevamente.');

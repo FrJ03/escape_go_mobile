@@ -45,8 +45,8 @@ class CluesScreen extends StatelessWidget {
         itemCount: cluesIds.length,
         itemBuilder: (context, index) {
           // Para cada clueId en cluesIds -> obtiene la pista con getClue
-          return FutureBuilder<Clue>(
-            future: _controllerC.getClue(cluesIds[index], escapeRoomId, participationId),
+          return FutureBuilder<Clue?>(
+            future: _controllerC.getClue(context,cluesIds[index], escapeRoomId, participationId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator()); // SIMULA CARGA

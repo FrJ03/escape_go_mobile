@@ -72,7 +72,6 @@ class EscapeRoomController{
 
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
-        print('Response body: ${response.body}');
         final json = jsonDecode(response.body);
 
         if (json['escape_rooms'] == null) {

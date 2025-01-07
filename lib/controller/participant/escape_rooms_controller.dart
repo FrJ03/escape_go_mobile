@@ -13,6 +13,8 @@ class EscapeRoomsController{
     try {
       Position position = await _getLocation();
       String coordinates = _positionToString(position);
+
+      print(coordinates);
       //Tenemos que saber parsear las coordenadas
       final token = await _getToken(); // Recupera el token almacenado
       if (token == null) {
@@ -28,6 +30,7 @@ class EscapeRoomsController{
         'coordinates': coordinates, // Enviar coordenadas en el cuerpo
 
       });
+      print(body);
 
       final response = await http.post(url, headers: headers, body: body); //Se está mandando el request y esperando el response
     if(response.statusCode == 200){
@@ -51,6 +54,7 @@ class EscapeRoomsController{
       throw Exception('Error en la conexión: $e');
     }
   }
+
 
 
 
@@ -133,4 +137,5 @@ class EscapeRoomsController{
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
   }
+
 }

@@ -6,7 +6,6 @@ import '../../controller/participant/game_controller.dart';
 import 'escaperoomsviewParticipant.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'dart:async';
-import 'dart:convert';
 
 void main() {
   runApp(MaterialApp(
@@ -283,7 +282,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 																			if (solution.isNotEmpty) {
 																				try {
 																					// obtiene los puntos
-																					final points = await controller.solve(solution, escapeRoomId, participationId);
+																					final points = await controller.solve(context,solution, escapeRoomId, participationId);
 
 																					showDialog(
 																						context: context,
@@ -418,17 +417,19 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 
 
 														// Obtiene la pista entera
-														Clue clue = await controller.getClue(parsedInt, escapeRoomId, participationId);
+														Clue ?clue = await controller.getClue(context,parsedInt, escapeRoomId, participationId);
 														// Actualiza la pista actual
-														setState(() {
-															currentClueText = clue.info;
-															cluesIds.add(clue.id);
-														});
+														if(clue!=null) {
+															setState(() {
+																currentClueText = clue.info;
+																cluesIds.add(clue.id);
+															});
+														}
 														// Cierra la sesión NFC
 														await NfcManager.instance.stopSession();
 														// Regresa al usuario a la vista del juego
 														ScaffoldMessenger.of(context).showSnackBar(
-															SnackBar(content: Text("Pista encontrada: ${clue.title}")),
+															SnackBar(content: Text("Pista encontrada: ${clue!.title}")),
 														);
 														nextClueTimer = new Timer(Duration(minutes: 20), () => {});
 													} catch (e) {
