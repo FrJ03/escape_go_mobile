@@ -283,7 +283,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 																				try {
 																					// obtiene los puntos
 																					final points = await controller.solve(context,solution, escapeRoomId, participationId);
-
+																					Future.delayed(Duration(milliseconds: 200), () { // delay
 																					showDialog(
 																						context: context,
 																						builder: (BuildContext context) {
@@ -317,6 +317,7 @@ class _GameEscapeScreenState extends State<GameEscapeScreen> {
 																							);
 																						},
 																					);
+																					}); // fin del delay
 																				} catch (e) {
 																					ScaffoldMessenger.of(context)
 																							.showSnackBar(
